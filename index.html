@@ -10,7 +10,7 @@
             --font-serif: 'Playfair Display', serif;
             --font-sans: 'Inter', sans-serif;
             --color-bg: #f8f8f8;
-            --color-text: #1a1a1a; /* Culoarea de bază a textului când nu este pe overlay */
+            --color-text: #1a1a1a; 
             --color-light-gray: #e0e0e0;
             --scroll-height-col1: 0px;
             --scroll-height-col2: 0px;
@@ -53,10 +53,14 @@
         .top-right-menu-text,
         .bottom-right-contact-text {
             position: absolute;
-            z-index: 10;
+            z-index: 10; /* Asigură că sunt deasupra imaginilor */
             opacity: 0.7;
-            /* Tranziție pentru culoare - MĂRITĂ LA 0.7s */
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease; 
+            /* Aplicăm mix-blend-mode pentru efectul de inversare a culorii */
+            mix-blend-mode: difference; /* ACEASTA ESTE CHEIA */
+            /* Culoarea inițială a textului. Difference o va inversa. */
+            color: black; 
+            /* Tranziție pentru toate proprietățile relevante */
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease, mix-blend-mode 0.7s ease; 
             pointer-events: auto;
         }
 
@@ -73,7 +77,8 @@
             font-size: 28px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: inherit; /* Va prelua culoarea setată de JS */
+            /* Culoarea inițială e black, mix-blend-mode va inversa */
+            color: inherit; 
             display: block;
             line-height: 1;
             margin-bottom: 5px;
@@ -84,7 +89,8 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: inherit; /* Va prelua culoarea setată de JS */
+            /* Culoarea inițială e black, mix-blend-mode va inversa */
+            color: inherit; 
             opacity: 0.7;
             display: block;
             line-height: 1;
@@ -97,11 +103,12 @@
             line-height: 1;
             cursor: pointer;
             font-weight: 300;
-            color: inherit; /* Va prelua culoarea setată de JS */
+            /* Culoarea inițială e black, mix-blend-mode va inversa */
+            color: inherit; 
             font-family: var(--font-sans);
             z-index: 1002; 
             opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease; 
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease, mix-blend-mode 0.7s ease; 
             pointer-events: auto;
 
             width: 79px; 
@@ -116,6 +123,7 @@
         .menu-toggle-btn.active {
             transform: rotate(90deg);
             color: white !important; /* Asigură că este alb pe fundalul întunecat al overlay-ului */
+            mix-blend-mode: normal !important; /* Dezactivăm blend mode pe overlay-uri */
             opacity: 1; 
         }
 
@@ -127,7 +135,8 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: inherit; /* Va prelua culoarea setată de JS */
+            /* Culoarea inițială e black, mix-blend-mode va inversa */
+            color: inherit; 
             transform: rotate(90deg) translateX(100%);
             transform-origin: top right;
             white-space: nowrap;
@@ -143,7 +152,8 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: inherit; /* Va prelua culoarea setată de JS */
+            /* Culoarea inițială e black, mix-blend-mode va inversa */
+            color: inherit; 
             transform: rotate(-90deg) translateX(100%);
             transform-origin: bottom right;
             white-space: nowrap;
@@ -157,11 +167,14 @@
             pointer-events: none !important;
         }
 
-        /* Clasele text-dark și text-light NU MAI SUNT NECESARE DACĂ FACEM INTERPOLARE DIRECTĂ */
-        /* le las momentan comentate, în cazul în care vrei să revii la ele */
-        /* .text-dark { color: black; } */
-        /* .text-light { color: white; } */
-        /* Am mutat tranziția de culoare în blocurile de mai sus */
+        /* Când un overlay este activ, dezactivăm mix-blend-mode și forțăm culoarea albă */
+        .ui-elements-container.overlay-active .logo-container,
+        .ui-elements-container.overlay-active .top-right-menu-text,
+        .ui-elements-container.overlay-active .bottom-right-contact-text {
+            mix-blend-mode: normal !important;
+            color: white !important;
+        }
+
 
         /* --- Carusel de Imagini MODIFICAT pentru 3 coloane și fără spații --- */
         .image-carousel-container {
@@ -751,8 +764,7 @@
             .detail-text-area .detail-description { font-size: 0.9rem; max-width: none; margin-left: 0; margin-bottom: 20px; }
             .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; } 
 
-            .overlay-more .more-links { text-align: right; padding-right: 20px; }
-            .overlay-more .more-links a { font-size: 3rem; }
+            .overlay-more .more-links a { font-size: 2.2rem; }
         }
 
         @media(max-width: 480px) {
@@ -782,7 +794,7 @@
     </style>
 </head>
 <body>
-    <div class="ui-elements-container">
+    <div class="ui-elements-container" id="uiElementsContainer">
         <div class="logo-container">
             <div class="logo" id="mainLogo">
                 <span class="title">4RCHIVED</span>
@@ -899,6 +911,7 @@
     </div>
 
     <script>
+        const uiElementsContainer = document.getElementById('uiElementsContainer');
         const overlayMenu = document.getElementById('overlayMenu');
         const overlayContact = document.getElementById('overlayContact');
         const overlayMore = document.getElementById('overlayMore'); 
@@ -1059,7 +1072,9 @@
                     showMainUIElements();
                     scrollAnimationActive = true;
                     restartScrollAnimations();
-                    startPixelCheckInterval(); // Repornim verificarea culorii
+                    // Nu mai e nevoie de startPixelCheckInterval() aici pentru mix-blend-mode
+                    // ci mai degrabă să reactivăm mix-blend-mode
+                    uiElementsContainer.classList.remove('overlay-active'); 
                 });
                 return;
             }
@@ -1074,9 +1089,9 @@
             overlayElement.classList.add('active'); 
 
             hideMainUIElements();
-            stopPixelCheckInterval(); // Oprim verificarea culorii
+            // Când un overlay este activ, dezactivăm mix-blend-mode și setăm culoarea la alb
+            uiElementsContainer.classList.add('overlay-active'); 
             mainMenuToggle.classList.add('active'); 
-            mainMenuToggle.style.color = 'white'; 
 
             scrollAnimationActive = false; 
             restartScrollAnimations();
@@ -1109,7 +1124,7 @@
                     showMainUIElements(); 
                     scrollAnimationActive = true;
                     restartScrollAnimations();
-                    startPixelCheckInterval(); // Repornim verificarea culorii
+                    uiElementsContainer.classList.remove('overlay-active'); 
                 });
             } else if (overlayMore.classList.contains('active')) { 
                 toggleOverlay(overlayMore);
@@ -1160,12 +1175,12 @@
             detailReadMore.style.opacity = '1';
 
             hideMainUIElements(); 
-            stopPixelCheckInterval(); // Oprim verificarea culorii
-
+            // Când imaginea este în detaliu, dezactivăm mix-blend-mode și forțăm culoarea la default (text-color)
+            uiElementsContainer.classList.add('overlay-active'); // Reutilizăm clasa pentru a dezactiva blend mode și seta culoarea
+            
             backButton.classList.remove('hide-ui'); 
             
             mainMenuToggle.classList.add('active'); 
-            mainMenuToggle.style.color = 'white'; 
 
             scrollAnimationActive = false;
             restartScrollAnimations();
@@ -1177,7 +1192,7 @@
                 scrollAnimationActive = true;
                 populateColumns(); 
                 restartScrollAnimations();
-                startPixelCheckInterval(); // Repornim verificarea culorii
+                uiElementsContainer.classList.remove('overlay-active'); 
             });
         });
 
@@ -1214,140 +1229,20 @@
             }
         });
 
-        // --- NEW JAVASCRIPT FOR DYNAMIC TEXT COLORING ---
-        let canvas, ctx;
-        let pixelCheckInterval;
-
-        function initializeCanvas() {
-            canvas = document.createElement('canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            ctx = canvas.getContext('2d', { willReadFrequently: true });
-        }
-
-        function getAverageLuminosity(x, y, width, height) {
-            try {
-                // Curățăm canvas-ul
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Desenăm imaginile vizibile din carusel în canvas
-                const visibleImages = [];
-                imageColumns.forEach(column => {
-                    Array.from(column.children).forEach(img => {
-                        const rect = img.getBoundingClientRect();
-                        // Verificăm dacă imaginea este vizibilă pe ecran
-                        if (rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth) {
-                            visibleImages.push({ element: img, rect: rect });
-                        }
-                    });
-                });
-
-                visibleImages.forEach(({ element, rect }) => {
-                    // Verificăm dacă imaginea este complet încărcată pentru a evita erori
-                    if (element.complete && element.naturalWidth > 0) {
-                        ctx.drawImage(element, rect.left, rect.top, rect.width, rect.height);
-                    }
-                });
-
-                const imageData = ctx.getImageData(x, y, width, height);
-                const data = imageData.data;
-                let r = 0, g = 0, b = 0;
-
-                for (let i = 0; i < data.length; i += 4) {
-                    r += data[i];
-                    g += data[i + 1];
-                    b += data[i + 2];
-                }
-
-                const pixelCount = data.length / 4;
-                const avgR = r / pixelCount;
-                const avgG = g / pixelCount;
-                const avgB = b / pixelCount;
-
-                const luminance = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB); // valoare de la 0 la 255
-                return luminance;
-
-            } catch (e) {
-                console.warn("Could not get pixel data:", e);
-                return null;
-            }
-        }
-
-        // Funcție pentru a interpola o culoare pe baza luminozității
-        function interpolateColor(luminosity) {
-            // Luminozitatea este între 0 (întunecat) și 255 (deschis)
-            // Vrem ca textul să fie alb când luminozitatea e mică și negru când e mare.
-
-            // Definirea a două praguri pentru tranziție
-            const darkThreshold = 80;  // Sub acest prag, textul e alb
-            const lightThreshold = 180; // Peste acest prag, textul e negru
-
-            let factor;
-            if (luminosity <= darkThreshold) {
-                factor = 1; // 100% alb
-            } else if (luminosity >= lightThreshold) {
-                factor = 0; // 100% negru
-            } else {
-                // Interpolează între 1 (alb) și 0 (negru)
-                // Când luminozitatea crește de la darkThreshold la lightThreshold
-                factor = 1 - ((luminosity - darkThreshold) / (lightThreshold - darkThreshold));
-            }
-
-            // Calculăm componentele RGB
-            const r = Math.round(255 * factor); // Când factor e 1, e 255 (alb). Când factor e 0, e 0 (negru)
-            const g = Math.round(255 * factor);
-            const b = Math.round(255 * factor);
-
-            return `rgb(${r}, ${g}, ${b})`;
-        }
-
-
-        // Funcție care verifică luminozitatea și schimbă culoarea textului
-        function updateTextColorsBasedOnBackground() {
-            if (!ctx) return; 
-
-            adaptableUIElements.forEach(element => {
-                if (element.classList.contains('hide-ui') || element.classList.contains('active')) {
-                    return; 
-                }
-
-                const rect = element.getBoundingClientRect();
-                const checkX = rect.left + rect.width / 2;
-                const checkY = rect.top + rect.height / 2;
-
-                const luminosity = getAverageLuminosity(checkX, checkY, 1, 1); 
-
-                if (luminosity !== null) {
-                    const interpolatedColor = interpolateColor(luminosity);
-                    element.style.color = interpolatedColor;
-                }
-            });
-        }
-
-        function startPixelCheckInterval() {
-            if (pixelCheckInterval) {
-                clearInterval(pixelCheckInterval);
-            }
-            // Am mărit intervalul la 150ms pentru a da mai mult timp tranziției
-            pixelCheckInterval = setInterval(updateTextColorsBasedOnBackground, 150); 
-        }
-        
-        function stopPixelCheckInterval() {
-            clearInterval(pixelCheckInterval);
-            pixelCheckInterval = null;
-        }
+        // --- OLD JAVASCRIPT FOR DYNAMIC TEXT COLORING - NOT NEEDED WITH MIX-BLEND-MODE ---
+        // Eliminăm funcțiile de canvas și pixel checking
+        // Ele nu mai sunt necesare pentru efectul de inversare a culorii cu mix-blend-mode.
+        // Culoarea textului va fi gestionată exclusiv prin CSS.
 
         window.addEventListener('load', () => {
             document.body.style.overflow = 'hidden'; 
-            initializeCanvas(); 
             populateColumns();
-            startPixelCheckInterval(); 
+            // Nu mai apelăm startPixelCheckInterval();
         });
 
         window.addEventListener('resize', () => {
-            initializeCanvas(); 
             populateColumns(); 
-            updateTextColorsBasedOnBackground(); 
+            // Nu mai apelăm updateTextColorsBasedOnBackground();
         });
 
     </script>
