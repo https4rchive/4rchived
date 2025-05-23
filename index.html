@@ -10,9 +10,8 @@
             --font-serif: 'Playfair Display', serif;
             --font-sans: 'Inter', sans-serif;
             --color-bg: #f8f8f8;
-            --color-text: #1a1a1a;
+            --color-text: #1a1a1a; /* Culoarea de bază a textului când nu este pe overlay */
             --color-light-gray: #e0e0e0;
-            /* Variabile CSS pentru înălțimea scroll-ului dinamic */
             --scroll-height-col1: 0px;
             --scroll-height-col2: 0px;
             --scroll-height-col3: 0px;
@@ -26,7 +25,7 @@
 
         html, body {
             height: 100%;
-            overflow: hidden; /* Prevents main scrollbar until preloader is done */
+            overflow: hidden; 
         }
 
         body {
@@ -37,27 +36,29 @@
             line-height: 1.6;
         }
 
-        /* --- Global UI Elements container for blend mode --- */
+        /* --- Global UI Elements container --- */
         .ui-elements-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1000; /* Peste imagini, sub overlay-uri */
-            pointer-events: none; /* Permite click-urile să treacă prin container */
+            z-index: 1000; 
+            pointer-events: none; 
         }
 
+        /* Aceste elemente își vor schimba culoarea prin JS */
         .logo-container,
+        .menu-toggle-btn,
         .top-right-menu-text,
         .bottom-right-contact-text {
             position: absolute;
             z-index: 10;
             opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease; /* Adăugat color pentru tranziție */
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease; /* Tranziție pentru culoare */
             pointer-events: auto;
-            mix-blend-mode: difference; /* Efect de culori inversate */
-            color: white; /* Culoare inițială pentru blend mode */
+            /* mix-blend-mode: difference;  ELIMINAT */
+            /* color: white; ELIMINAT */
         }
 
         .logo-container:hover,
@@ -73,7 +74,7 @@
             font-size: 28px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: inherit;
+            color: inherit; /* Va prelua culoarea setată de JS */
             display: block;
             line-height: 1;
             margin-bottom: 5px;
@@ -84,37 +85,41 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: inherit;
+            color: inherit; /* Va prelua culoarea setată de JS */
             opacity: 0.7;
             display: block;
             line-height: 1;
         }
 
         .menu-toggle-btn {
-            position: absolute;
             bottom: 40px;
-            left: 40px; /* Acum X-ul este în stânga jos */
+            left: 40px; 
             font-size: 100px;
             line-height: 1;
             cursor: pointer;
             font-weight: 300;
-            color: white; /* Culoare inițială albă pentru '+' pe fundalul de imagini */
+            color: inherit; /* Va prelua culoarea setată de JS */
             font-family: var(--font-sans);
-            z-index: 1002; /* Asigură că este deasupra overlay-urilor */
+            z-index: 1002; 
             opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease, mix-blend-mode 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease; 
             pointer-events: auto;
-            mix-blend-mode: difference; /* Inițial, pentru a funcționa pe imaginile din fundal */
+            /* mix-blend-mode: difference; ELIMINAT */
+
+            width: 79px; 
+            height: 79px; 
+            display: flex; 
+            justify-content: center;
+            align-items: center;
         }
-        .menu-toggle-btn:hover {
-            opacity: 1;
-        }
+        .menu-toggle-btn:hover { opacity: 1; }
+        
         /* Când mainMenuToggle devine "X" (active) pe un overlay cu fundal solid */
         .menu-toggle-btn.active {
             transform: rotate(90deg);
             color: white; /* Asigură că este alb pe fundalul întunecat al overlay-ului */
-            mix-blend-mode: normal; /* Dezactivează blend mode-ul când e 'X' și vizibil pe overlay */
-            opacity: 1; /* Vizibilitate maximă */
+            /* mix-blend-mode: normal; ELIMINAT - nu mai este necesar */
+            opacity: 1; 
         }
 
         .top-right-menu-text {
@@ -125,7 +130,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: inherit;
+            color: inherit; /* Va prelua culoarea setată de JS */
             transform: rotate(90deg) translateX(100%);
             transform-origin: top right;
             white-space: nowrap;
@@ -141,7 +146,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: inherit;
+            color: inherit; /* Va prelua culoarea setată de JS */
             transform: rotate(-90deg) translateX(100%);
             transform-origin: bottom right;
             white-space: nowrap;
@@ -155,6 +160,17 @@
             pointer-events: none !important;
         }
 
+        /* Clasele pentru culorile determinate de JS */
+        .text-dark { color: black; }
+        .text-light { color: white; }
+        /* Adăugăm tranziție pe culoarea textului */
+        .logo-container,
+        .menu-toggle-btn,
+        .top-right-menu-text,
+        .bottom-right-contact-text {
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+        }
+
         /* --- Carusel de Imagini MODIFICAT pentru 3 coloane și fără spații --- */
         .image-carousel-container {
             position: absolute;
@@ -164,23 +180,21 @@
             height: 100%;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* 3 coloane */
-            gap: 0; /* Fără spații */
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 0; 
             z-index: 1;
         }
 
-        .image-column { /* Clasă generală pentru coloane */
+        .image-column { 
             display: flex;
             flex-direction: column;
             height: fit-content;
             width: 100%;
-            /* Animațiile vor fi setate dinamic în JS pentru a asigura sincronizarea */
         }
 
         .image-column:nth-child(1) { animation: scrollAnimationCol1 linear infinite; }
         .image-column:nth-child(2) { animation: scrollAnimationCol2 linear infinite; }
         .image-column:nth-child(3) { animation: scrollAnimationCol3 linear infinite; }
-
 
         @keyframes scrollAnimationCol1 {
             0% { transform: translateY(0); }
@@ -188,7 +202,7 @@
         }
 
         @keyframes scrollAnimationCol2 {
-            0% { transform: translateY(calc(-1 * var(--scroll-height-col2))); } /* Pornește de jos în sus */
+            0% { transform: translateY(calc(-1 * var(--scroll-height-col2))); } 
             100% { transform: translateY(0); }
         }
 
@@ -199,48 +213,35 @@
 
         .image-item {
             width: 100%;
-            /* Ajustează înălțimea pentru a se potrivi cu 451x562px */
-            /* width: 451px; */ /* Nu setați o lățime fixă aici, va fi gestionată de grid */
-            height: 562px; /* Înălțime fixă */
-            object-fit: cover; /* Asigură că imaginea umple spațiul fără a se deforma */
+            height: 562px; 
+            object-fit: cover; 
             display: block;
-            /* Elimină bordura albă */
             border: none; 
             padding: 0; 
             box-sizing: border-box;
             cursor: pointer;
-
-            transition: opacity 0.8s ease-in-out, 
-                        transform 0.8s ease-in-out, 
-                        margin 0.8s ease-in-out; 
-            transform-origin: center center;
         }
 
         .image-item.hidden {
             opacity: 0;
-            transform: scale(0.7);
-            /* margin-top: -10px; */ /* Ajustat pentru a nu lăsa spații albe */
-            /* margin-bottom: -10px; */
-            height: 0; /* O imagine ascunsă nu trebuie să ocupe spațiu */
+            height: 0;
             min-height: 0;
             max-height: 0;
-            overflow: hidden; /* Ascunde conținutul */
+            overflow: hidden;
             pointer-events: none;
+            margin: 0 !important; 
         }
 
         .image-item.visible {
             opacity: 1;
-            transform: scale(1);
-            /* margin-top: 0; */
-            /* margin-bottom: 0; */
-            height: 562px; /* Revenire la înălțimea fixă */
+            height: 562px; 
             min-height: auto;
             max-height: auto;
             pointer-events: auto;
         }
 
         /* --- OVERLAY STYLES --- */
-        .overlay-menu, .overlay-contact, .image-detail-overlay, .overlay-more {
+        .overlay-menu, .overlay-contact, .overlay-more {
             position: fixed;
             top: 0;
             left: 0;
@@ -252,20 +253,36 @@
             transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), 
                         opacity 0.6s cubic-bezier(0.7, 0, 0.3, 1);
             opacity: 0; 
-        }
-
-        .overlay-menu, .overlay-contact, .overlay-more { 
             background-color: rgba(0, 0, 0, 0.88); 
             transform: translateY(-100%); 
         }
+
         .image-detail-overlay { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 2000; 
+            visibility: hidden;
+            pointer-events: none;
             background-color: var(--color-bg); 
-            transform: translateX(0); /* Va apărea prin opacity */ 
+            opacity: 0; 
+            transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            display: flex; 
+            flex-direction: column;
         }
 
-
-        .overlay-menu.active, .overlay-contact.active, .image-detail-overlay.active, .overlay-more.active {
+        .overlay-menu.active, 
+        .overlay-contact.active, 
+        .overlay-more.active {
             transform: translateY(0);
+            opacity: 1;
+            visibility: visible; 
+            pointer-events: auto; 
+        }
+
+        .image-detail-overlay.active {
             opacity: 1;
             visibility: visible; 
             pointer-events: auto; 
@@ -273,28 +290,28 @@
 
         /* --- OVERLAY MENU (Textul trebuie să fie pe stânga) --- */
         .overlay-menu .menu-links {
-            text-align: left; /* Textul pe stânga, conform imaginii */
+            text-align: left; 
             max-width: 1200px;
             width: 100%;
-            padding-left: 100px; /* Ajustat pentru a muta textul la dreapta */
+            padding-left: 100px; 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 100%; /* Ocupă toată înălțimea pentru centrare verticală */
+            height: 100%; 
         }
 
         .overlay-menu .menu-links a {
             display: block;
             font-family: var(--font-sans);
-            font-size: 5.5rem; /* Mărit pentru a se potrivi cu imaginea */
+            font-size: 5.5rem; 
             font-weight: 900;
             margin: 15px 0;
             text-decoration: none;
             color: white;
             transition: transform 0.3s ease, opacity 0.3s ease;
             line-height: 1;
-            letter-spacing: -1px; /* Ajustat pentru aspect */
+            letter-spacing: -1px; 
             text-transform: uppercase;
             text-shadow: 0 0 5px rgba(255,255,255,0.3);
             -webkit-font-smoothing: antialiased;
@@ -304,12 +321,12 @@
         }
 
         .overlay-menu .menu-links a:hover {
-            transform: translateX(30px); /* Modificat pentru slide din stânga */
+            transform: translateX(30px); 
             opacity: 1;
         }
 
         .overlay-menu.active .menu-links a {
-            animation: slideInFromLeft 0.6s ease-out forwards; /* Modificat animația */
+            animation: slideInFromLeft 0.6s ease-out forwards; 
             opacity: 0;
         }
         .overlay-menu.active .menu-links a:nth-child(1) { animation-delay: 0.1s; }
@@ -317,8 +334,7 @@
         .overlay-menu.active .menu-links a:nth-child(3) { animation-delay: 0.2s; }
         .overlay-menu.active .menu-links a:nth-child(4) { animation-delay: 0.25s; }
         .overlay-menu.active .menu-links a:nth-child(5) { animation-delay: 0.3s; }
-        .overlay-menu.active .menu-links a:nth-child(6) { animation-delay: 0.35s; } /* Pentru noul link "MORE" */
-
+        .overlay-menu.active .menu-links a:nth-child(6) { animation-delay: 0.35s; } 
 
         @keyframes slideInFromLeft {
             from { opacity: 0; transform: translateX(-50px); }
@@ -335,8 +351,8 @@
 
         .contact-content {
             width: 100%;
-            max-width: 900px; /* Lărgit pentru a se potrivi cu imaginea */
-            margin: 0 auto; /* Centrat */
+            max-width: 900px; 
+            margin: 0 auto; 
             display: flex;
             flex-direction: column;
             gap: 40px;
@@ -345,7 +361,7 @@
         }
 
         .contact-header {
-            text-align: left; /* Modificat */
+            text-align: left; 
             margin-bottom: 30px;
         }
 
@@ -374,7 +390,7 @@
             font-family: var(--font-sans);
             font-size: 18px;
             font-weight: 500;
-            text-align: left; /* Modificat */
+            text-align: left; 
             margin-bottom: 40px;
             color: white;
             line-height: 1.4;
@@ -391,9 +407,9 @@
             font-size: 16px;
             font-weight: 400;
             color: rgba(255, 255, 255, 0.7);
-            text-align: left; /* Modificat */
-            max-width: 500px; /* Ajustat */
-            margin-left: 0; /* Aliniere la stânga */
+            text-align: left; 
+            max-width: 500px; 
+            margin-left: 0; 
             line-height: 1.8;
             margin-bottom: 60px;
         }
@@ -461,14 +477,13 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             transition: background-color 0.3s ease, color 0.3s ease;
-            align-self: flex-start; /* Aliniat la stânga */
-            margin-left: 0; /* Aliniat la stânga */
+            align-self: flex-start; 
+            margin-left: 0; 
         }
         .submit-button:hover { background-color: var(--color-light-gray); }
 
         /* --- IMAGE DETAIL OVERLAY --- */
         .image-detail-overlay {
-            z-index: 2000; 
             display: flex;
             flex-direction: column;
         }
@@ -487,7 +502,6 @@
             z-index: 2001;
             opacity: 0.7;
             transition: opacity 0.3s ease;
-            mix-blend-mode: normal; 
         }
         .image-detail-overlay .back-button:hover {
             opacity: 1;
@@ -589,35 +603,35 @@
 
         /* --- NEW OVERLAY: MORE/EDITORIAL (Textul trebuie să fie pe dreapta) --- */
         .overlay-more {
-            justify-content: flex-start; /* Aliniere sus */
+            justify-content: flex-start; 
             padding-top: 100px;
             box-sizing: border-box;
             color: white;
         }
 
         .overlay-more .more-links {
-            text-align: right; /* Aliniere la dreapta conform imaginii */
+            text-align: right; 
             max-width: 1200px;
             width: 100%;
-            padding-right: 100px; /* Ajustat pentru a împinge textul la stânga */
+            padding-right: 100px; 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centrare verticală */
+            justify-content: center; 
             height: 100%;
         }
 
         .overlay-more .more-links a {
             display: block;
             font-family: var(--font-sans);
-            font-size: 5.5rem; /* Mărit pentru a se potrivi cu imaginea */
+            font-size: 5.5rem; 
             font-weight: 900;
             margin: 15px 0;
             text-decoration: none;
             color: white;
             transition: transform 0.3s ease, opacity 0.3s ease;
             line-height: 1;
-            letter-spacing: -1px; /* Ajustat pentru aspect */
+            letter-spacing: -1px; 
             text-transform: uppercase;
             text-shadow: 0 0 5px rgba(255,255,255,0.3);
             -webkit-font-smoothing: antialiased;
@@ -627,12 +641,12 @@
         }
 
         .overlay-more .more-links a:hover {
-            transform: translateX(-30px); /* Animație spre stânga la hover */
+            transform: translateX(-30px); 
             opacity: 1;
         }
 
         .overlay-more.active .more-links a {
-            animation: slideInFromRight 0.6s ease-out forwards; /* Animație de intrare de la dreapta */
+            animation: slideInFromRight 0.6s ease-out forwards; 
             opacity: 0;
         }
         .overlay-more.active .more-links a:nth-child(1) { animation-delay: 0.1s; }
@@ -644,12 +658,16 @@
         .overlay-more.active .more-links a:nth-child(7) { animation-delay: 0.4s; }
         .overlay-more.active .more-links a:nth-child(8) { animation-delay: 0.45s; }
         .overlay-more.active .more-links a:nth-child(9) { animation-delay: 0.5s; }
-        .overlay-more.active .more-links a:nth-child(10) { animation-delay: 0.55s; } /* Pentru "MORE" */
+        .overlay-more.active .more-links a:nth-child(10) { animation-delay: 0.55s; } 
 
+
+        @keyframes slideInFromRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
 
         /* --- MEDIA QUERIES --- */
 
-        /* Tablets and smaller desktops (max-width: 1024px) */
         @media(max-width: 1024px) {
             .logo-container { top: 30px; left: 30px; }
             .logo .title { font-size: 24px; }
@@ -657,7 +675,7 @@
             .menu-toggle-btn { bottom: 30px; left: 30px; font-size: 80px; }
             .top-right-menu-text { top: 30px; font-size: 14px; }
             .bottom-right-contact-text { bottom: 30px; font-size: 14px; }
-            .overlay-menu .menu-links { padding-left: 60px; } /* Ajustat */
+            .overlay-menu .menu-links { padding-left: 60px; } 
             .overlay-menu .menu-links a { font-size: 4.5rem; }
             .overlay-contact { padding-top: 60px; }
             .contact-content { max-width: 700px; padding: 0 30px; }
@@ -668,17 +686,14 @@
             .form-group input, .form-group textarea, .form-group select { padding: 12px 0; }
             .submit-button { padding: 12px 25px; font-size: 16px; margin-top: 20px; }
             
-            /* Carousel adjustments for 2 columns on tablets */
             .image-carousel-container {
-                grid-template-columns: 1fr 1fr; /* 2 coloane */
+                grid-template-columns: 1fr 1fr; 
             }
             .image-column:nth-child(3) {
-                display: none; /* A treia coloană ascunsă pe tabletă */
+                display: none; 
             }
-            .image-item { min-height: 200px; max-height: 350px; height: auto; /* Adjust height for fluid layout */ }
+            .image-item { min-height: 200px; max-height: 350px; height: auto; }
 
-
-            /* Image Detail Overlay adjustments */
             .image-detail-overlay .back-button { top: 30px; left: 30px; font-size: 14px; }
             .image-detail-overlay .detail-text-area { padding: 60px; }
             .detail-text-area .detail-title { font-size: 4rem; margin-bottom: 15px; }
@@ -686,12 +701,10 @@
             .detail-text-area .detail-description { font-size: 0.9rem; margin-bottom: 20px; }
             .detail-text-area .detail-read-more { font-size: 0.8rem; }
 
-            /* New Overlay More adjustments */
             .overlay-more .more-links { padding-right: 60px; }
             .overlay-more .more-links a { font-size: 4.5rem; }
         }
 
-        /* Mobile devices (max-width: 768px) */
         @media(max-width: 768px) {
             .logo-container { top: 20px; left: 20px; }
             .logo .title { font-size: 20px; letter-spacing: 1.5px; }
@@ -699,7 +712,6 @@
 
             .menu-toggle-btn { bottom: 20px; left: 20px; font-size: 60px; }
             
-            /* Reposition menu/contact texts for mobile */
             .top-right-menu-text {
                 top: 20px;
                 right: 20px;
@@ -721,44 +733,36 @@
                 padding-right: 0;
             }
             
-            /* Carusel adjustments for mobile */
             .image-carousel-container {
-                grid-template-columns: 1fr; /* 1 coloană pe mobil */
+                grid-template-columns: 1fr; 
             }
             .image-column:nth-child(2),
             .image-column:nth-child(3) {
-                display: none; /* Doar prima coloană vizibilă pe mobil */
+                display: none; 
             }
-            .image-item { min-height: 180px; max-height: 300px; height: auto; /* Adjust height for fluid layout */ }
+            .image-item { min-height: 180px; max-height: 300px; height: auto; }
 
-            /* Overlay Menu adjustments */
-            .overlay-menu .menu-links { text-align: left; padding-left: 20px; } /* Aliniere la stânga pe mobil cu padding */
+            .overlay-menu .menu-links { text-align: left; padding-left: 20px; } 
             .overlay-menu .menu-links a { font-size: 3rem; margin: 10px 0; }
 
-            /* Overlay Contact adjustments */
             .overlay-contact { padding-top: 40px; }
             .contact-content { max-width: 100%; padding: 0 20px; }
-            .contact-header { text-align: left; margin-bottom: 20px; } /* Revenit la stanga */
-            .contact-header .title { font-size: 40px; }
-            .contact-info { text-align: left; margin-bottom: 20px; } /* Revenit la stanga */
-            .contact-description { text-align: left; margin: 0 0 30px 0; max-width: none; } /* Revenit la stanga */
+            .contact-header { text-align: left; margin-bottom: 20px; } 
+            .contact-info { text-align: left; margin-bottom: 20px; } 
+            .contact-description { text-align: left; margin: 0 0 30px 0; max-width: none; } 
             .contact-form { grid-template-columns: 1fr; gap: 15px; }
-            .submit-button { margin-right: auto; margin-left: 0; } /* Aliniat la stanga */
+            .submit-button { margin-right: auto; margin-left: 0; } 
 
-            /* Image Detail Overlay adjustments for mobile */
             .image-detail-overlay .detail-text-area { padding: 30px 15px; }
             .detail-text-area .detail-title { font-size: 3rem; }
             .detail-text-area .detail-subtitle { font-size: 1rem; }
             .detail-text-area .detail-description { font-size: 0.9rem; max-width: none; margin-left: 0; margin-bottom: 20px; }
-            .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; } /* Aliniat la stanga */
-            .image-detail-overlay .back-button { top: 20px; left: 20px; font-size: 12px; }
+            .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; } 
 
-            /* New Overlay More adjustments */
-            .overlay-more .more-links { text-align: right; padding-right: 20px; } /* Aliniere la dreapta pe mobil cu padding */
+            .overlay-more .more-links { text-align: right; padding-right: 20px; }
             .overlay-more .more-links a { font-size: 3rem; }
         }
 
-        /* Smaller mobile devices (max-width: 480px) */
         @media(max-width: 480px) {
             .logo-container { top: 15px; left: 15px; }
             .logo .title { font-size: 18px; }
@@ -774,15 +778,13 @@
             .contact-description { font-size: 13px; }
             .form-group input, .form-group textarea, .form-group select { padding: 10px 0; }
             .submit-button { padding: 10px 20px; font-size: 14px; }
-            .image-item { min-height: 150px; max-height: 250px; height: auto; /* Adjust height for fluid layout */ }
+            .image-item { min-height: 150px; max-height: 250px; height: auto; }
 
-            /* Image Detail Overlay adjustments for smaller mobile */
             .image-detail-overlay .detail-text-area { padding: 30px 15px; }
             .detail-text-area .detail-title { font-size: 2.5rem; }
             .detail-text-area .detail-subtitle { font-size: 0.9rem; }
             .detail-text-area .detail-description { font-size: 0.85rem; }
 
-            /* New Overlay More adjustments */
             .overlay-more .more-links a { font-size: 2.2rem; }
         }
     </style>
@@ -831,7 +833,8 @@
             <a href="#" data-filter="portrait">PORTRAIT</a>
             <a href="#" data-filter="urban">URBAN</a>
             <a href="#" data-filter="events">EVENTS</a>
-            <a href="#" id="moreCategoriesLink">MORE</a> </div>
+            <a href="#" id="moreCategoriesLink">MORE</a> 
+        </div>
     </div>
 
     <div class="overlay-more" id="overlayMore">
@@ -906,7 +909,7 @@
     <script>
         const overlayMenu = document.getElementById('overlayMenu');
         const overlayContact = document.getElementById('overlayContact');
-        const overlayMore = document.getElementById('overlayMore'); // Noul overlay "MORE"
+        const overlayMore = document.getElementById('overlayMore'); 
         const mainMenuToggle = document.getElementById('mainMenuToggle');
         const contactLink = document.getElementById('contactLink');
         const menuText = document.getElementById('menuText');
@@ -917,7 +920,6 @@
         const imageColumn3 = document.getElementById('imageColumn3');
         const imageColumns = [imageColumn1, imageColumn2, imageColumn3];
 
-        // Elemente pentru detaliu imagine
         const imageDetailOverlay = document.getElementById('imageDetailOverlay');
         const backButton = document.getElementById('backButton');
         const detailTitle = document.getElementById('detailTitle');
@@ -926,16 +928,17 @@
         const detailReadMore = document.getElementById('detailReadMore');
         const detailImage = document.getElementById('detailImage');
         
-        const moreCategoriesLink = document.getElementById('moreCategoriesLink'); // Linkul "MORE" din meniul principal
+        const moreCategoriesLink = document.getElementById('moreCategoriesLink'); 
 
-        // Flag pentru a ști dacă caruselul rulează sau este oprit
         let scrollAnimationActive = true; 
 
+        // Elemente UI care își schimbă culoarea dinamic
+        const adaptableUIElements = [mainLogo, mainMenuToggle, menuText, contactLink];
+
         // Definire un array cu toate imaginile (sursa + categorie + detalii)
-        // AM ACTUALIZAT CĂILE IMAGINILOR CONFORM FIȘIERELOR TALE ÎNCĂRCATE
         const images = [
             { src: 'images/IMG_0015.jpeg', category: 'wedding', title: 'Nunta Elegantă', subtitle: 'O ceremonie frumoasă în inima orașului.', description: 'Această nuntă intimă a surprins esența iubirii adevărate, pe fundalul unei arhitecturi uimitoare și al unor sărbători pline de bucurie.', readMore: '#' },
-            { src: 'images/IMG_0037.jpeg', category: 'portrait', title: 'Portret Dramatic', subtitle: 'Capturând emoții brute.', description: 'Un studiu de lumină și umbră, acest portret își propune să dezvăluie poveștile nespuse din interior.', readMore: '#' },
+            { src: 'images/IMG_0037.jpeg', category: 'portrait', title: 'Portret Dramatic', subtitle: 'Capturând emoții brute.', description: 'Un studiu de lumină și umbră, acest portret își propune să dezvălui poveștile nespuse din interior.', readMore: '#' },
             { src: 'images/IMG_1803.jpeg', category: 'urban', title: 'Viața Urbană', subtitle: 'Pulsul metropolei.', description: 'Prin lentilă, energia vibrantă a orașului prinde viață. De la străzi aglomerate la alei ascunse și liniștite.', readMore: '#' },
             { src: 'images/IMG_1830.jpeg', category: 'events', title: 'Marele Gala', subtitle: 'O seară de sărbătoare.', description: 'Documentând farmecul și emoția unui eveniment de anvergură, aceste fotografii surprind momentele cheie și atmosfera.', readMore: '#' },
             { src: 'images/IMG_1863.jpeg', category: 'wedding', title: 'Nuntă Rustică', subtitle: 'Dragoste la țară.', description: 'Amplasată pe un fundal rural pitoresc, această nuntă a îmbrățișat frumusețea naturală și momente calde, intime.', readMore: '#' },
@@ -960,22 +963,17 @@
             { src: 'images/IMG_9982.jpeg', category: 'editorial', title: 'Poveste Vizuală', subtitle: 'Fotoreportaj.', description: 'Imagini cu o narativă puternică, create pentru a spune o poveste sau a documenta un subiect într-o manieră vizuală captivantă.', readMore: '#' }
         ];
 
-        // Duplicăm imaginile pentru a crea un efect de scroll infinit.
-        // Asigură-te că ai suficiente imagini (cel puțin 2 seturi complete) pentru a umple spațiul vizibil al ambelor coloane și a permite scroll-ul infinit.
-        const duplicatedImages = [...images, ...images, ...images]; // Două seturi în plus pentru a fi sigur
+        const duplicatedImages = [...images, ...images, ...images]; 
 
-        // Funcția de populare a coloanelor
         function populateColumns(filterCategory = 'all') {
-            imageColumns.forEach(column => column.innerHTML = ''); // Golim toate coloanele
+            imageColumns.forEach(column => column.innerHTML = ''); 
 
-            // Filtrează imaginile în funcție de categorie
             const filteredImages = duplicatedImages.filter(image => 
                 filterCategory === 'all' || 
                 image.category === filterCategory || 
                 (filterCategory === 'more_sub' && ['black_white', 'bride', 'groom', 'couple', 'party', 'film', 'details', 'press', 'editorial'].includes(image.category))
             );
 
-            // Distribuim imaginile filtratelor în cele 3 coloane (sau 2, sau 1, în funcție de media query)
             filteredImages.forEach((image, index) => {
                 const imgElement = document.createElement('img');
                 imgElement.src = image.src;
@@ -987,47 +985,38 @@
                 imgElement.dataset.description = image.description;
                 imgElement.dataset.readMore = image.readMore;
 
-                // Calculăm coloana în care ar trebui să meargă imaginea
                 const columnIndex = index % imageColumns.length;
                 imageColumns[columnIndex].appendChild(imgElement);
             });
 
-            // Re-calculează înălțimile după popularea coloanelor
             updateScrollHeights();
-            // Restartează animațiile
             restartScrollAnimations();
         }
 
-        // Funcția pentru a calcula și seta înălțimile scroll-ului dinamic
         function updateScrollHeights() {
-            // Calculează înălțimea de scroll pentru fiecare coloană în parte
             imageColumns.forEach((column, index) => {
-                // Dacă coloana este ascunsă prin CSS (media queries), setați înălțimea la 0
-                if (column.style.display === 'none' || column.offsetWidth === 0) {
+                if (window.getComputedStyle(column).display === 'none' || column.offsetHeight === 0) {
                      document.documentElement.style.setProperty(`--scroll-height-col${index + 1}`, `0px`);
                 } else {
-                    // Dacă e vizibilă, calculează înălțimea reală
-                    const scrollHeight = column.scrollHeight / 3; // Împărțim la 3 pentru că avem 3 seturi duplicate
+                    const scrollHeight = column.scrollHeight / 3; 
                     document.documentElement.style.setProperty(`--scroll-height-col${index + 1}`, `${scrollHeight}px`);
                 }
             });
         }
 
-        // Funcția pentru a restarta animațiile de scroll
         function restartScrollAnimations() {
             imageColumns.forEach((column, index) => {
                 column.style.animation = 'none';
-                void column.offsetWidth; // Force reflow
+                void column.offsetWidth; 
+
                 if (scrollAnimationActive) {
-                    // Alternăm direcția animației pentru coloana 2
-                    const animationName = (index === 1) ? `scrollAnimationCol${index + 1} reverse linear infinite` : `scrollAnimationCol${index + 1} linear infinite`;
-                    column.style.animation = animationName;
-                    column.style.animationDuration = '40s'; // Poți ajusta viteza
+                    const animationDirection = (index === 1) ? 'reverse' : 'normal';
+                    column.style.animation = `scrollAnimationCol${index + 1} linear infinite ${animationDirection}`;
+                    column.style.animationDuration = '40s'; 
                 }
             });
         }
 
-        // Functie helper pentru a ascunde un overlay fluid
         function hideOverlaySmoothly(overlayElement, callback = null) {
             if (!overlayElement.classList.contains('active')) {
                 if (callback) callback();
@@ -1035,7 +1024,18 @@
             }
 
             if (overlayElement === imageDetailOverlay) {
-                overlayElement.style.opacity = '0';
+                detailImage.style.transform = 'translateX(50px)';
+                detailImage.style.opacity = '0';
+                detailTitle.style.transform = 'translateX(-50px)';
+                detailTitle.style.opacity = '0';
+                detailSubtitle.style.transform = 'translateX(-50px)';
+                detailSubtitle.style.opacity = '0';
+                detailDescription.style.transform = 'translateX(-50px)';
+                detailDescription.style.opacity = '0';
+                detailReadMore.style.transform = 'translateX(-50px)';
+                detailReadMore.style.opacity = '0';
+                
+                overlayElement.style.opacity = '0'; 
             } else {
                 overlayElement.style.transform = 'translateY(-100%)';
             }
@@ -1059,47 +1059,38 @@
             overlayElement.addEventListener('transitionend', onTransitionEnd);
         }
 
-        // Funcția principală pentru a activa/dezactiva overlay-uri
         function toggleOverlay(overlayElement) {
             const isActive = overlayElement.classList.contains('active');
             
-            // Logica de închidere
             if (isActive) {
                 hideOverlaySmoothly(overlayElement, () => {
                     showMainUIElements();
                     scrollAnimationActive = true;
                     restartScrollAnimations();
+                    startPixelCheckInterval(); // Repornim verificarea culorii
                 });
                 return;
             }
 
-            // Logica de deschidere a unui nou overlay:
-            
-            // 1. Ascunde toate celelalte overlay-uri deschise fluent
             if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
             if (overlayContact.classList.contains('active')) hideOverlaySmoothly(overlayContact);
             if (imageDetailOverlay.classList.contains('active')) hideOverlaySmoothly(imageDetailOverlay);
-            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); // Noul overlay "MORE"
+            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); 
 
-            // 2. Afișează imediat overlay-ul nou
             overlayElement.style.visibility = 'visible';
             overlayElement.style.pointerEvents = 'auto';
             overlayElement.classList.add('active'); 
 
-            // 3. Ascunde elementele UI principale
             hideMainUIElements();
-
-            // 4. Transformă mainMenuToggle în "X" și asigură vizibilitatea pe fundal solid
+            stopPixelCheckInterval(); // Oprim verificarea culorii
             mainMenuToggle.classList.add('active'); 
             mainMenuToggle.style.color = 'white'; 
-            mainMenuToggle.style.mixBlendMode = 'normal'; 
 
             scrollAnimationActive = false; 
             restartScrollAnimations();
             document.body.style.overflow = 'hidden'; 
         }
 
-        // Functie ajutatoare pentru a ascunde elementele UI principale (excluzând mainMenuToggle)
         function hideMainUIElements() {
             menuText.classList.add('hide-ui');
             contactLink.classList.add('hide-ui');
@@ -1107,23 +1098,16 @@
             backButton.classList.add('hide-ui'); 
         }
 
-        // Functie ajutatoare pentru a afișa elementele UI principale
         function showMainUIElements() {
             menuText.classList.remove('hide-ui');
             contactLink.classList.remove('hide-ui');
             mainLogo.classList.remove('hide-ui');
             
             mainMenuToggle.classList.remove('active'); 
-            mainMenuToggle.style.color = 'white'; // Culoare inițială albă pentru '+'
-            mainMenuToggle.style.mixBlendMode = 'difference'; // Reset la blend mode-ul inițial
-
             backButton.classList.add('hide-ui'); 
         }
 
-
-        // Modifică event listener-ul pentru mainMenuToggle
         mainMenuToggle.addEventListener('click', () => {
-            // Verifică care overlay este activ și închide-l
             if (overlayMenu.classList.contains('active')) {
                 toggleOverlay(overlayMenu);
             } else if (overlayContact.classList.contains('active')) {
@@ -1133,12 +1117,12 @@
                     showMainUIElements(); 
                     scrollAnimationActive = true;
                     restartScrollAnimations();
+                    startPixelCheckInterval(); // Repornim verificarea culorii
                 });
-            } else if (overlayMore.classList.contains('active')) { // Adăugat pentru noul overlay "MORE"
+            } else if (overlayMore.classList.contains('active')) { 
                 toggleOverlay(overlayMore);
             }
             else {
-                // Dacă niciun overlay nu este activ, deschide meniul
                 toggleOverlay(overlayMenu);
             }
         });
@@ -1151,18 +1135,15 @@
             toggleOverlay(overlayContact);
         });
 
-        // Adaugă event listener pentru noul link "MORE" din meniul principal
         moreCategoriesLink.addEventListener('click', (e) => {
             e.preventDefault();
-            toggleOverlay(overlayMore); // Deschide overlay-ul "MORE"
+            toggleOverlay(overlayMore); 
         });
 
-        // Funcția pentru afișarea detaliilor imaginii
         function showImageDetail(image) {
-            // Închide toate celelalte overlay-uri înainte de a deschide detaliile imaginii
             if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
             if (overlayContact.classList.contains('active')) hideOverlaySmoothly(overlayContact);
-            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); // Noul overlay "MORE"
+            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); 
 
             detailImage.src = image.src;
             detailImage.alt = image.title;
@@ -1175,31 +1156,40 @@
             imageDetailOverlay.style.pointerEvents = 'auto';
             imageDetailOverlay.classList.add('active');
             
+            detailImage.style.transform = 'translateX(0)';
+            detailImage.style.opacity = '1';
+            detailTitle.style.transform = 'translateX(0)';
+            detailTitle.style.opacity = '1';
+            detailSubtitle.style.transform = 'translateX(0)';
+            detailSubtitle.style.opacity = '1';
+            detailDescription.style.transform = 'translateX(0)';
+            detailDescription.style.opacity = '1';
+            detailReadMore.style.transform = 'translateX(0)';
+            detailReadMore.style.opacity = '1';
+
             hideMainUIElements(); 
+            stopPixelCheckInterval(); // Oprim verificarea culorii
 
             backButton.classList.remove('hide-ui'); 
             
             mainMenuToggle.classList.add('active'); 
             mainMenuToggle.style.color = 'white'; 
-            mainMenuToggle.style.mixBlendMode = 'normal'; 
-            
+
             scrollAnimationActive = false;
             restartScrollAnimations();
         }
 
-        // Funcția pentru ascunderea detaliilor imaginii (apelată și de backButton)
         backButton.addEventListener('click', () => {
             hideOverlaySmoothly(imageDetailOverlay, () => {
                 showMainUIElements(); 
                 scrollAnimationActive = true;
+                populateColumns(); 
                 restartScrollAnimations();
+                startPixelCheckInterval(); // Repornim verificarea culorii
             });
         });
 
-
-        // Adaugă event listener pentru click pe link-urile din meniul overlay (principal)
         document.querySelectorAll('.overlay-menu .menu-links a').forEach(link => {
-            // Exclude linkul "MORE" din această logică, el are propriul listener
             if (link.id !== 'moreCategoriesLink') {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1210,18 +1200,15 @@
             }
         });
 
-        // Adaugă event listener pentru click pe link-urile din noul overlay "MORE"
         document.querySelectorAll('.overlay-more .more-links a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const filterCategory = e.target.dataset.filter;
                 populateColumns(filterCategory);
-                toggleOverlay(overlayMore); // Închide overlay-ul "MORE"
+                toggleOverlay(overlayMore); 
             });
         });
 
-
-        // Adaugă event listener pentru click pe imagini
         imageCarouselContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('image-item')) {
                 const image = {
@@ -1235,18 +1222,140 @@
             }
         });
 
-        // Initial setup - populate columns immediately as there's no preloader
+        // --- NEW JAVASCRIPT FOR DYNAMIC TEXT COLORING ---
+        let canvas, ctx;
+        let pixelCheckInterval;
+
+        function initializeCanvas() {
+            canvas = document.createElement('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx = canvas.getContext('2d', { willReadFrequently: true });
+            // Nu este necesar să adăugăm canvas-ul în DOM, îl folosim doar pentru calcul
+            // document.body.appendChild(canvas); // Doar pentru debug, poți să-l vezi
+        }
+
+        function getAverageLuminosity(x, y, width, height) {
+            try {
+                // Curățăm canvas-ul
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Desenăm imaginile vizibile din carusel în canvas
+                const visibleImages = [];
+                imageColumns.forEach(column => {
+                    Array.from(column.children).forEach(img => {
+                        const rect = img.getBoundingClientRect();
+                        // Verificăm dacă imaginea este vizibilă pe ecran
+                        if (rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth) {
+                            visibleImages.push({ element: img, rect: rect });
+                        }
+                    });
+                });
+
+                visibleImages.forEach(({ element, rect }) => {
+                    // Verificăm dacă imaginea este complet încărcată pentru a evita erori
+                    if (element.complete && element.naturalWidth > 0) {
+                        ctx.drawImage(element, rect.left, rect.top, rect.width, rect.height);
+                    }
+                });
+
+                const imageData = ctx.getImageData(x, y, width, height);
+                const data = imageData.data;
+                let r = 0, g = 0, b = 0;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    r += data[i];
+                    g += data[i + 1];
+                    b += data[i + 2];
+                }
+
+                const pixelCount = data.length / 4;
+                const avgR = r / pixelCount;
+                const avgG = g / pixelCount;
+                const avgB = b / pixelCount;
+
+                // Calculează luminozitatea (Luminance) folosind formula standard
+                // (0.299 * R + 0.587 * G + 0.114 * B) / 255
+                const luminance = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB); // valoare de la 0 la 255
+                return luminance;
+
+            } catch (e) {
+                // Această eroare apare dacă încerci să citești pixeli dintr-o imagine de pe alt domeniu (CORS)
+                // sau dacă imaginea nu s-a încărcat încă.
+                console.warn("Could not get pixel data:", e);
+                return null; // Returnează null sau o valoare implicită în caz de eroare
+            }
+        }
+
+        // Funcție care verifică luminozitatea și schimbă culoarea textului
+        function updateTextColorsBasedOnBackground() {
+            if (!ctx) return; // Asigură-te că canvas-ul este inițializat
+
+            adaptableUIElements.forEach(element => {
+                // Ignoră elementele care sunt ascunse sau active (pe overlay)
+                if (element.classList.contains('hide-ui') || element.classList.contains('active')) {
+                    return; 
+                }
+
+                const rect = element.getBoundingClientRect();
+                // Verificăm punctul central al elementului
+                const checkX = rect.left + rect.width / 2;
+                const checkY = rect.top + rect.height / 2;
+
+                const luminosity = getAverageLuminosity(checkX, checkY, 1, 1); // Verificăm un singur pixel central
+
+                if (luminosity !== null) {
+                    if (luminosity < 128) { // Pragul de luminozitate (jumătatea între 0 și 255)
+                        element.classList.remove('text-dark');
+                        element.classList.add('text-light'); // Fundal închis -> text deschis
+                    } else {
+                        element.classList.remove('text-light');
+                        element.classList.add('text-dark'); // Fundal deschis -> text închis
+                    }
+                }
+            });
+        }
+
+        // Rulează check-ul luminozității la un interval regulat
+        function startPixelCheckInterval() {
+            // Curăță intervalul existent pentru a preveni multiple instanțe
+            if (pixelCheckInterval) {
+                clearInterval(pixelCheckInterval);
+            }
+            pixelCheckInterval = setInterval(updateTextColorsBasedOnBackground, 100); // Verifică la fiecare 100ms
+        }
+        
+        // Oprește verificarea pixelilor când overlay-urile sunt active
+        function stopPixelCheckInterval() {
+            clearInterval(pixelCheckInterval);
+            pixelCheckInterval = null;
+        }
+
+        // Apel inițial la încărcarea paginii și la redimensionare
         window.addEventListener('load', () => {
-            document.body.style.overflow = 'hidden'; // Keep body overflow hidden for vertical scroll
+            document.body.style.overflow = 'hidden'; 
+            initializeCanvas(); // Inițializează canvas-ul
             populateColumns();
+            startPixelCheckInterval(); // Pornește verificarea pixelilor
         });
 
-        // Initial setup
         window.addEventListener('resize', () => {
-            // Repopulează coloanele la resize pentru a re-calcula imaginile vizibile/ascunse
-            // în funcție de media queries și numărul de coloane
+            initializeCanvas(); // Re-inițializează canvas-ul la redimensionare
             populateColumns(); 
+            updateTextColorsBasedOnBackground(); // Actualizează imediat culorile
         });
+
+        // Apelăm updateTextColorsBasedOnBackground la fiecare "scroll" al caruselului (când animația rulează)
+        // Deși animația CSS rulează, putem să forțăm o verificare la un interval.
+        // `setInterval` este o metodă mai robustă pentru a asigura actualizarea continuă.
+
+        // Modificăm funcțiile de toggleOverlay și hideOverlaySmoothly pentru a gestiona intervalul
+        // Când un overlay se deschide, oprim pixel check-ul.
+        // Când un overlay se închide și caruselul redevine activ, repornim pixel check-ul.
+
+        // Modificări în toggleOverlay și hideOverlaySmoothly sunt deja integrate mai sus,
+        // ele includ apeluri la startPixelCheckInterval() și stopPixelCheckInterval().
+
     </script>
 </body>
 </html>
