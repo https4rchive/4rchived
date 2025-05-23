@@ -51,7 +51,8 @@
         .logo-container,
         .menu-toggle-btn,
         .top-right-menu-text,
-        .bottom-right-contact-text {
+        .bottom-right-contact-text,
+        .category-display-text { /* NEW: Added category display text */
             position: absolute;
             z-index: 10;
             opacity: 0.7;
@@ -150,6 +151,28 @@
             cursor: pointer;
             padding-right: 0;
         }
+
+        /* NEW: Style for category display text */
+        .category-display-text {
+            bottom: 40px;
+            left: 140px; /* Position next to the '+' button */
+            font-family: var(--font-sans);
+            font-weight: 900;
+            font-size: 70px; /* Large font size */
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 1;
+            color: inherit;
+            pointer-events: none; /* Only for display, not interaction */
+            opacity: 0; /* Initially hidden */
+            transform: translateX(-20px); /* Small slide-in effect */
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease;
+        }
+
+        .category-display-text.active {
+            opacity: 0.7;
+            transform: translateX(0);
+        }
         
         /* Clasă pentru a ascunde elementele UI */
         .hide-ui {
@@ -233,7 +256,7 @@
         }
 
         /* --- OVERLAY STYLES --- */
-        .overlay-menu, .overlay-contact, .overlay-more {
+        .overlay-menu, .overlay-contact { /* Removed .overlay-more */
             position: fixed;
             top: 0;
             left: 0;
@@ -242,11 +265,12 @@
             z-index: 1001; 
             visibility: hidden;
             pointer-events: none;
-            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), 
-                        opacity 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            transition: opacity 0.6s cubic-bezier(0.7, 0, 0.3, 1), 
+                        transform 0.6s cubic-bezier(0.7, 0, 0.3, 1); /* Adăugăm transform în tranziție */
             opacity: 0; 
             background-color: rgba(0, 0, 0, 0.88); 
-            transform: translateY(-100%); 
+            transform: scaleY(0); /* Inițial, scalat la 0 pe Y */
+            transform-origin: top; /* Animația pornește de sus */
         }
 
         .image-detail-overlay { 
@@ -266,9 +290,8 @@
         }
 
         .overlay-menu.active, 
-        .overlay-contact.active, 
-        .overlay-more.active {
-            transform: translateY(0);
+        .overlay-contact.active { /* Removed .overlay-more.active */
+            transform: scaleY(1); /* Devine vizibil prin scalare */
             opacity: 1;
             visibility: visible; 
             pointer-events: auto; 
@@ -280,12 +303,12 @@
             pointer-events: auto; 
         }
 
-        /* --- OVERLAY MENU (Textul trebuie să fie pe stânga) --- */
+        /* --- OVERLAY MENU (Textul trebuie să fie pe DREAPTA acum) --- */
         .overlay-menu .menu-links {
-            text-align: left; 
+            text-align: right; /* Changed from left to right */
             max-width: 1200px;
             width: 100%;
-            padding-left: 100px; 
+            padding-right: 100px; /* Changed from left to right */
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -313,21 +336,26 @@
         }
 
         .overlay-menu .menu-links a:hover {
-            transform: translateX(30px); 
+            transform: translateX(-30px); /* Changed from translateX(30px) to -30px */
             opacity: 1;
         }
 
         .overlay-menu.active .menu-links a {
-            animation: slideInFromLeft 0.6s ease-out forwards; 
-            opacity: 0;
+            animation: slideInFromRight 0.6s ease-out forwards; /* Changed from slideInFromLeft to slideInFromRight */
+            opacity: 0; /* Set opacity to 0 initially for the animation to take over */
         }
         .overlay-menu.active .menu-links a:nth-child(1) { animation-delay: 0.1s; }
         .overlay-menu.active .menu-links a:nth-child(2) { animation-delay: 0.15s; }
         .overlay-menu.active .menu-links a:nth-child(3) { animation-delay: 0.2s; }
         .overlay-menu.active .menu-links a:nth-child(4) { animation-delay: 0.25s; }
-        .overlay-menu.active .menu-links a:nth-child(5) { animation-delay: 0.3s; }
-        .overlay-menu.active .menu-links a:nth-child(6) { animation-delay: 0.35s; } 
 
+        /* NEW: Keyframe for slideInFromRight */
+        @keyframes slideInFromRight {
+            from { opacity: 0; transform: translateX(50px) translateY(-20px); } /* Adăugăm un mic translateY */
+            to { opacity: 1; transform: translateX(0) translateY(0); }
+        }
+
+        /* Original slideInFromLeft, kept for other uses if any, but menu now uses FromRight */
         @keyframes slideInFromLeft {
             from { opacity: 0; transform: translateX(-50px); }
             to { opacity: 1; transform: translateX(0); }
@@ -593,71 +621,6 @@
             display: block;
         }
 
-        /* --- NEW OVERLAY: MORE/EDITORIAL (Textul trebuie să fie pe dreapta) --- */
-        .overlay-more {
-            justify-content: flex-start; 
-            padding-top: 100px;
-            box-sizing: border-box;
-            color: white;
-        }
-
-        .overlay-more .more-links {
-            text-align: right; 
-            max-width: 1200px;
-            width: 100%;
-            padding-right: 100px; 
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; 
-            height: 100%;
-        }
-
-        .overlay-more .more-links a {
-            display: block;
-            font-family: var(--font-sans);
-            font-size: 5.5rem; 
-            font-weight: 900;
-            margin: 15px 0;
-            text-decoration: none;
-            color: white;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            line-height: 1;
-            letter-spacing: -1px; 
-            text-transform: uppercase;
-            text-shadow: 0 0 5px rgba(255,255,255,0.3);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            image-rendering: -webkit-optimize-contrast;
-            font-feature-settings: "liga" 0, "clig" 0;
-        }
-
-        .overlay-more .more-links a:hover {
-            transform: translateX(-30px); 
-            opacity: 1;
-        }
-
-        .overlay-more.active .more-links a {
-            animation: slideInFromRight 0.6s ease-out forwards; 
-            opacity: 0;
-        }
-        .overlay-more.active .more-links a:nth-child(1) { animation-delay: 0.1s; }
-        .overlay-more.active .more-links a:nth-child(2) { animation-delay: 0.15s; }
-        .overlay-more.active .more-links a:nth-child(3) { animation-delay: 0.2s; }
-        .overlay-more.active .more-links a:nth-child(4) { animation-delay: 0.25s; }
-        .overlay-more.active .more-links a:nth-child(5) { animation-delay: 0.3s; }
-        .overlay-more.active .more-links a:nth-child(6) { animation-delay: 0.35s; }
-        .overlay-more.active .more-links a:nth-child(7) { animation-delay: 0.4s; }
-        .overlay-more.active .more-links a:nth-child(8) { animation-delay: 0.45s; }
-        .overlay-more.active .more-links a:nth-child(9) { animation-delay: 0.5s; }
-        .overlay-more.active .more-links a:nth-child(10) { animation-delay: 0.55s; } 
-
-
-        @keyframes slideInFromRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
         /* --- MEDIA QUERIES --- */
 
         @media(max-width: 1024px) {
@@ -665,9 +628,10 @@
             .logo .title { font-size: 24px; }
             .logo .motto { font-size: 12px; }
             .menu-toggle-btn { bottom: 30px; left: 30px; font-size: 80px; }
+            .category-display-text { bottom: 30px; left: 120px; font-size: 55px; } /* Adjusted for tablet */
             .top-right-menu-text { top: 30px; font-size: 14px; }
             .bottom-right-contact-text { bottom: 30px; font-size: 14px; }
-            .overlay-menu .menu-links { padding-left: 60px; } 
+            .overlay-menu .menu-links { padding-right: 60px; } /* Adjusted for tablet */
             .overlay-menu .menu-links a { font-size: 4.5rem; }
             .overlay-contact { padding-top: 60px; }
             .contact-content { max-width: 700px; padding: 0 30px; }
@@ -692,9 +656,6 @@
             .detail-text-area .detail-subtitle { font-size: 1rem; margin-bottom: 8px; }
             .detail-text-area .detail-description { font-size: 0.9rem; margin-bottom: 20px; }
             .detail-text-area .detail-read-more { font-size: 0.8rem; }
-
-            .overlay-more .more-links { padding-right: 60px; }
-            .overlay-more .more-links a { font-size: 4.5rem; }
         }
 
         @media(max-width: 768px) {
@@ -703,6 +664,7 @@
             .logo .motto { display: none; } 
 
             .menu-toggle-btn { bottom: 20px; left: 20px; font-size: 60px; }
+            .category-display-text { bottom: 20px; left: 90px; font-size: 40px; } /* Adjusted for mobile */
             
             .top-right-menu-text {
                 top: 20px;
@@ -734,7 +696,7 @@
             }
             .image-item { min-height: 180px; max-height: 300px; height: auto; }
 
-            .overlay-menu .menu-links { text-align: left; padding-left: 20px; } 
+            .overlay-menu .menu-links { text-align: right; padding-right: 20px; } /* Adjusted for mobile */
             .overlay-menu .menu-links a { font-size: 3rem; margin: 10px 0; }
 
             .overlay-contact { padding-top: 40px; }
@@ -750,15 +712,13 @@
             .detail-text-area .detail-subtitle { font-size: 1rem; }
             .detail-text-area .detail-description { font-size: 0.9rem; max-width: none; margin-left: 0; margin-bottom: 20px; }
             .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; } 
-
-            .overlay-more .more-links { text-align: right; padding-right: 20px; }
-            .overlay-more .more-links a { font-size: 3rem; }
         }
 
         @media(max-width: 480px) {
             .logo-container { top: 15px; left: 15px; }
             .logo .title { font-size: 18px; }
             .menu-toggle-btn { bottom: 15px; left: 15px; font-size: 45px; }
+            .category-display-text { bottom: 15px; left: 70px; font-size: 28px; } /* Adjusted for small mobile */
             .top-right-menu-text, .bottom-right-contact-text { top: 15px; right: 15px; font-size: 10px; }
             
             .overlay-menu .menu-links a { font-size: 2.2rem; }
@@ -776,8 +736,6 @@
             .detail-text-area .detail-title { font-size: 2.5rem; }
             .detail-text-area .detail-subtitle { font-size: 0.9rem; }
             .detail-text-area .detail-description { font-size: 0.85rem; }
-
-            .overlay-more .more-links a { font-size: 2.2rem; }
         }
     </style>
 </head>
@@ -791,6 +749,8 @@
         </div>
 
         <div class="menu-toggle-btn" id="mainMenuToggle">+</div>
+
+        <div class="category-display-text" id="categoryDisplayText">ALL</div>
 
         <div class="top-right-menu-text" id="menuText">MENU</div>
 
@@ -821,26 +781,9 @@
     <div class="overlay-menu" id="overlayMenu">
         <div class="menu-links">
             <a href="#" data-filter="all">ALL</a>
-            <a href="#" data-filter="wedding">WEDDING</a>
-            <a href="#" data-filter="portrait">PORTRAIT</a>
+            <a href="#" data-filter="black_white">BLACK AND WHITE</a>
             <a href="#" data-filter="urban">URBAN</a>
-            <a href="#" data-filter="events">EVENTS</a>
-            <a href="#" id="moreCategoriesLink">MORE</a> 
-        </div>
-    </div>
-
-    <div class="overlay-more" id="overlayMore">
-        <div class="more-links">
-            <a href="#" data-filter="black_white">BLACK & WHITE</a>
-            <a href="#" data-filter="bride">BRIDE</a>
-            <a href="#" data-filter="groom">GROOM</a>
-            <a href="#" data-filter="couple">COUPLE</a>
-            <a href="#" data-filter="party">PARTY</a>
-            <a href="#" data-filter="film">FILM</a>
-            <a href="#" data-filter="details">DETAILS</a>
-            <a href="#" data-filter="press">PRESS</a>
-            <a href="#" data-filter="editorial">EDITORIAL</a>
-            <a href="#" data-filter="more_sub">MORE</a>
+            <a href="#" data-filter="portrait">PORTRAIT</a>
         </div>
     </div>
 
@@ -901,7 +844,7 @@
     <script>
         const overlayMenu = document.getElementById('overlayMenu');
         const overlayContact = document.getElementById('overlayContact');
-        const overlayMore = document.getElementById('overlayMore'); 
+        // Removed overlayMore as it's no longer needed
         const mainMenuToggle = document.getElementById('mainMenuToggle');
         const contactLink = document.getElementById('contactLink');
         const menuText = document.getElementById('menuText');
@@ -920,12 +863,14 @@
         const detailReadMore = document.getElementById('detailReadMore');
         const detailImage = document.getElementById('detailImage');
         
-        const moreCategoriesLink = document.getElementById('moreCategoriesLink'); 
+        // Removed moreCategoriesLink
+        const categoryDisplayText = document.getElementById('categoryDisplayText');
 
         let scrollAnimationActive = true; 
+        let currentFilterCategory = 'all'; // Keep track of the current filter
 
         // Elemente UI care își schimbă culoarea dinamic
-        const adaptableUIElements = [mainLogo, mainMenuToggle, menuText, contactLink];
+        const adaptableUIElements = [mainLogo, mainMenuToggle, menuText, contactLink, categoryDisplayText];
 
         // Definire un array cu toate imaginile (sursa + categorie + detalii)
         const images = [
@@ -952,7 +897,9 @@
             { src: 'images/IMG_9623.jpeg', category: 'urban', title: 'Peisaje Urbane', subtitle: 'Arhitectura și viața orașului.', description: 'O serie de fotografii care explorează geometria, lumina și interacțiunea umană în mediul urban, transformând străzile în opere de artă.', readMore: '#' },
             { src: 'images/IMG_9771.jpeg', category: 'events', title: 'Concerte și Festivaluri', subtitle: 'Energia scenei.', description: 'Imagini dinamice surprinse la concerte și festivaluri, capturând atmosfera vibrantă, emoția publicului și performanțele artiștilor.', readMore: '#' },
             { src: 'images/IMG_9955.jpeg', category: 'black_white', title: 'Contrast Urban', subtitle: 'Străzi în nuanțe de gri.', description: 'Fotografii alb-negru care explorează contrastul puternic și compozițiile grafice găsite în arhitectura și viața de zi cu zi a orașului.', readMore: '#' },
-            { src: 'images/IMG_9982.jpeg', category: 'editorial', title: 'Poveste Vizuală', subtitle: 'Fotoreportaj.', description: 'Imagini cu o narativă puternică, create pentru a spune o poveste sau a documenta un subiect într-o manieră vizuală captivantă.', readMore: '#' }
+            { src: 'images/IMG_9982.jpeg', category: 'editorial', title: 'Poveste Vizuală', subtitle: 'Fotoreportaj.', description: 'Imagini cu o narativă puternică, create pentru a spune o poveste sau a documenta un subiect într-o manieră vizuală captivantă.', readMore: '#' },
+            { src: 'images/Captură de ecran din 2025-05-23 la 15.36.41.jpg', category: 'vinyl', title: 'Vinyl Vibes', subtitle: 'Analog sound, timeless feel.', description: 'A collection celebrating the unique aesthetic and nostalgic feel of vinyl records, capturing their texture and the rituals of listening.', readMore: '#' }, 
+            { src: 'images/Captură de ecran din 2025-05-23 la 15.36.51.jpg', category: 'vinyl', title: 'Spinning Records', subtitle: 'The art of sound.', description: 'Exploring the visual poetry of turntables and vinyl, focusing on the interplay of light and shadow on the grooves.', readMore: '#' } 
         ];
 
         const duplicatedImages = [...images, ...images, ...images]; 
@@ -960,11 +907,23 @@
         function populateColumns(filterCategory = 'all') {
             imageColumns.forEach(column => column.innerHTML = ''); 
 
+            currentFilterCategory = filterCategory; // Update current filter
+
             const filteredImages = duplicatedImages.filter(image => 
                 filterCategory === 'all' || 
-                image.category === filterCategory || 
-                (filterCategory === 'more_sub' && ['black_white', 'bride', 'groom', 'couple', 'party', 'film', 'details', 'press', 'editorial'].includes(image.category))
+                image.category === filterCategory
             );
+
+            // Update category display text
+            if (filterCategory === 'all') {
+                categoryDisplayText.textContent = 'ALL';
+            } else if (filterCategory === 'black_white') {
+                categoryDisplayText.textContent = 'BLACK AND WHITE';
+            } else {
+                categoryDisplayText.textContent = filterCategory.toUpperCase();
+            }
+            categoryDisplayText.classList.add('active'); // Show the text
+
 
             filteredImages.forEach((image, index) => {
                 const imgElement = document.createElement('img');
@@ -1028,6 +987,10 @@
                 detailReadMore.style.opacity = '0';
                 
                 overlayElement.style.opacity = '0'; 
+            } else if (overlayElement === overlayMenu) {
+                // Pentru overlayMenu, vrem doar fade-out și scaleY invers
+                overlayElement.style.opacity = '0';
+                overlayElement.style.transform = 'scaleY(0)';
             } else {
                 overlayElement.style.transform = 'translateY(-100%)';
             }
@@ -1039,8 +1002,9 @@
                 overlayElement.style.visibility = 'hidden';
                 overlayElement.style.pointerEvents = 'none';
                 
-                if (overlayElement === imageDetailOverlay) {
+                if (overlayElement === imageDetailOverlay || overlayElement === overlayMenu) {
                      overlayElement.style.opacity = ''; 
+                     overlayElement.style.transform = ''; // Reset transform for next activation
                 } else {
                      overlayElement.style.transform = ''; 
                 }
@@ -1067,7 +1031,6 @@
             if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
             if (overlayContact.classList.contains('active')) hideOverlaySmoothly(overlayContact);
             if (imageDetailOverlay.classList.contains('active')) hideOverlaySmoothly(imageDetailOverlay);
-            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); 
 
             overlayElement.style.visibility = 'visible';
             overlayElement.style.pointerEvents = 'auto';
@@ -1088,6 +1051,7 @@
             contactLink.classList.add('hide-ui');
             mainLogo.classList.add('hide-ui');
             backButton.classList.add('hide-ui'); 
+            categoryDisplayText.classList.remove('active'); // Hide category text when other UI elements are hidden
         }
 
         function showMainUIElements() {
@@ -1097,24 +1061,26 @@
             
             mainMenuToggle.classList.remove('active'); 
             backButton.classList.add('hide-ui'); 
+            categoryDisplayText.classList.add('active'); // Show category text when main UI is shown
         }
 
         mainMenuToggle.addEventListener('click', () => {
-            if (overlayMenu.classList.contains('active')) {
-                toggleOverlay(overlayMenu);
-            } else if (overlayContact.classList.contains('active')) {
-                toggleOverlay(overlayContact);
-            } else if (imageDetailOverlay.classList.contains('active')) {
+            // If any overlay is active, clicking '+' (which becomes 'X') should go to homepage
+            if (overlayMenu.classList.contains('active') || 
+                overlayContact.classList.contains('active') || 
+                imageDetailOverlay.classList.contains('active')) {
+                
+                hideOverlaySmoothly(overlayMenu);
+                hideOverlaySmoothly(overlayContact);
                 hideOverlaySmoothly(imageDetailOverlay, () => {
-                    showMainUIElements(); 
+                    showMainUIElements();
                     scrollAnimationActive = true;
+                    populateColumns('all'); // Reset to 'ALL' filter
                     restartScrollAnimations();
                     startPixelCheckInterval(); // Repornim verificarea culorii
                 });
-            } else if (overlayMore.classList.contains('active')) { 
-                toggleOverlay(overlayMore);
-            }
-            else {
+
+            } else {
                 toggleOverlay(overlayMenu);
             }
         });
@@ -1127,15 +1093,11 @@
             toggleOverlay(overlayContact);
         });
 
-        moreCategoriesLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleOverlay(overlayMore); 
-        });
+        // Removed the moreCategoriesLink event listener as the link is removed
 
         function showImageDetail(image) {
             if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
             if (overlayContact.classList.contains('active')) hideOverlaySmoothly(overlayContact);
-            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); 
 
             detailImage.src = image.src;
             detailImage.alt = image.title;
@@ -1175,31 +1137,22 @@
             hideOverlaySmoothly(imageDetailOverlay, () => {
                 showMainUIElements(); 
                 scrollAnimationActive = true;
-                populateColumns(); 
+                populateColumns(currentFilterCategory); // Return to previously filtered category
                 restartScrollAnimations();
                 startPixelCheckInterval(); // Repornim verificarea culorii
             });
         });
 
         document.querySelectorAll('.overlay-menu .menu-links a').forEach(link => {
-            if (link.id !== 'moreCategoriesLink') {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const filterCategory = e.target.dataset.filter;
-                    populateColumns(filterCategory);
-                    toggleOverlay(overlayMenu); 
-                });
-            }
-        });
-
-        document.querySelectorAll('.overlay-more .more-links a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const filterCategory = e.target.dataset.filter;
                 populateColumns(filterCategory);
-                toggleOverlay(overlayMore); 
+                toggleOverlay(overlayMenu); 
             });
         });
+
+        // Removed the event listener for .overlay-more links as the overlay itself is removed
 
         imageCarouselContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('image-item')) {
@@ -1214,7 +1167,7 @@
             }
         });
 
-        // --- NEW JAVASCRIPT FOR DYNAMIC TEXT COLORING ---
+        // --- JAVASCRIPT FOR DYNAMIC TEXT COLORING ---
         let canvas, ctx;
         let pixelCheckInterval;
 
@@ -1264,8 +1217,8 @@
                 const avgG = g / pixelCount;
                 const avgB = b / pixelCount;
 
-                const luminance = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB); // valoare de la 0 la 255
-                return luminance;
+                const luminosity = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB); // valoare de la 0 la 255
+                return luminosity;
 
             } catch (e) {
                 console.warn("Could not get pixel data:", e);
@@ -1308,7 +1261,13 @@
 
             adaptableUIElements.forEach(element => {
                 if (element.classList.contains('hide-ui') || element.classList.contains('active')) {
-                    return; 
+                    // Don't change color if hidden or if it's the '+' when active (it's hardcoded white)
+                    if (element.id === 'mainMenuToggle' && element.classList.contains('active')) {
+                         return;
+                    }
+                    if (element.id === 'categoryDisplayText' && !element.classList.contains('active')) {
+                        return; // Only update if actively visible
+                    }
                 }
 
                 const rect = element.getBoundingClientRect();
@@ -1340,13 +1299,13 @@
         window.addEventListener('load', () => {
             document.body.style.overflow = 'hidden'; 
             initializeCanvas(); 
-            populateColumns();
+            populateColumns(); // Initial populate with 'all'
             startPixelCheckInterval(); 
         });
 
         window.addEventListener('resize', () => {
             initializeCanvas(); 
-            populateColumns(); 
+            populateColumns(currentFilterCategory); // Repopulate with current filter on resize
             updateTextColorsBasedOnBackground(); 
         });
 
