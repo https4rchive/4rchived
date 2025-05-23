@@ -55,10 +55,9 @@
             position: absolute;
             z-index: 10;
             opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease; /* Tranziție pentru culoare */
+            /* Tranziție pentru culoare - MĂRITĂ LA 0.7s */
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease; 
             pointer-events: auto;
-            /* mix-blend-mode: difference;  ELIMINAT */
-            /* color: white; ELIMINAT */
         }
 
         .logo-container:hover,
@@ -102,9 +101,8 @@
             font-family: var(--font-sans);
             z-index: 1002; 
             opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease; 
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.7s ease; 
             pointer-events: auto;
-            /* mix-blend-mode: difference; ELIMINAT */
 
             width: 79px; 
             height: 79px; 
@@ -117,8 +115,7 @@
         /* Când mainMenuToggle devine "X" (active) pe un overlay cu fundal solid */
         .menu-toggle-btn.active {
             transform: rotate(90deg);
-            color: white; /* Asigură că este alb pe fundalul întunecat al overlay-ului */
-            /* mix-blend-mode: normal; ELIMINAT - nu mai este necesar */
+            color: white !important; /* Asigură că este alb pe fundalul întunecat al overlay-ului */
             opacity: 1; 
         }
 
@@ -160,16 +157,11 @@
             pointer-events: none !important;
         }
 
-        /* Clasele pentru culorile determinate de JS */
-        .text-dark { color: black; }
-        .text-light { color: white; }
-        /* Adăugăm tranziție pe culoarea textului */
-        .logo-container,
-        .menu-toggle-btn,
-        .top-right-menu-text,
-        .bottom-right-contact-text {
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
-        }
+        /* Clasele text-dark și text-light NU MAI SUNT NECESARE DACĂ FACEM INTERPOLARE DIRECTĂ */
+        /* le las momentan comentate, în cazul în care vrei să revii la ele */
+        /* .text-dark { color: black; } */
+        /* .text-light { color: white; } */
+        /* Am mutat tranziția de culoare în blocurile de mai sus */
 
         /* --- Carusel de Imagini MODIFICAT pentru 3 coloane și fără spații --- */
         .image-carousel-container {
@@ -952,7 +944,7 @@
             { src: 'images/IMG_2374.JPG', category: 'couple', title: 'Călătoria Cuplului', subtitle: 'Două inimi, un singur drum.', description: 'Fotografii intime ale cuplurilor, surprinzând legătura, chimia și momentele lor împărtășite de fericire și iubire.', readMore: '#' },
             { src: 'images/IMG_2405.JPG', category: 'party', title: 'Vibe-uri de Petrecere', subtitle: 'Sărbători pline de bucurie.', description: 'Imagini energice de la diverse petreceri și adunări, evidențiind distracția, râsetele și atmosfera vibrantă a evenimentelor sociale.', readMore: '#' },
             { src: 'images/IMG_7894.jpeg', category: 'film', title: 'Farmecul Analog', subtitle: 'Frumusețea fotografiei pe film.', description: 'O serie dedicată esteticii unice și senzației nostalgice a fotografiilor realizate pe film, prezentând granulația și culorile sale distinctive.', readMore: '#' },
-            { src: 'images/IMG_8778.jpeg', category: 'details', title: 'Detalii Intricate', subtitle: 'Lucrurile mici contează.', description: 'Concentrându-se pe detaliile fine care adesea trec neobservate, de la decorațiuni complicate la expresii subtile, adăugând profunzime și bogăție narațiunii.', readMore: '#' },
+            { src: 'images/IMG_8778.jpeg', category: 'details', title: 'Lucrurile mici contează.', subtitle: 'Detalii Intricate', description: 'Concentrându-se pe detaliile fine care adesea trec neobservate, de la decorațiuni complicate la expresii subtile, adăugând profunzime și bogăție narațiunii.', readMore: '#' },
             { src: 'images/IMG_8823.jpeg', category: 'press', title: 'Apariții în Presă', subtitle: 'Așa cum se vede în...', description: 'O compilație de lucrări prezentate în diverse publicații, demonstrând amploarea și recunoașterea fotografiei.', readMore: '#' },
             { src: 'images/IMG_8954.jpeg', category: 'editorial', title: 'Natura', subtitle: 'Pânza naturii.', description: 'Un omagiu adus lumii naturale, prezentând peisaje uimitoare, floră complexă și faună captivantă.', readMore: '#' },
             { src: 'images/IMG_9546.jpeg', category: 'wedding', title: 'Momente din Nunta', subtitle: 'Amintiri prețioase.', description: 'Capturi de momente autentice și pline de emoție din ziua nunții, surprinse cu delicatețe și atenție.', readMore: '#' },
@@ -1231,8 +1223,6 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             ctx = canvas.getContext('2d', { willReadFrequently: true });
-            // Nu este necesar să adăugăm canvas-ul în DOM, îl folosim doar pentru calcul
-            // document.body.appendChild(canvas); // Doar pentru debug, poți să-l vezi
         }
 
         function getAverageLuminosity(x, y, width, height) {
@@ -1274,87 +1264,91 @@
                 const avgG = g / pixelCount;
                 const avgB = b / pixelCount;
 
-                // Calculează luminozitatea (Luminance) folosind formula standard
-                // (0.299 * R + 0.587 * G + 0.114 * B) / 255
                 const luminance = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB); // valoare de la 0 la 255
                 return luminance;
 
             } catch (e) {
-                // Această eroare apare dacă încerci să citești pixeli dintr-o imagine de pe alt domeniu (CORS)
-                // sau dacă imaginea nu s-a încărcat încă.
                 console.warn("Could not get pixel data:", e);
-                return null; // Returnează null sau o valoare implicită în caz de eroare
+                return null;
             }
         }
 
+        // Funcție pentru a interpola o culoare pe baza luminozității
+        function interpolateColor(luminosity) {
+            // Luminozitatea este între 0 (întunecat) și 255 (deschis)
+            // Vrem ca textul să fie alb când luminozitatea e mică și negru când e mare.
+
+            // Definirea a două praguri pentru tranziție
+            const darkThreshold = 80;  // Sub acest prag, textul e alb
+            const lightThreshold = 180; // Peste acest prag, textul e negru
+
+            let factor;
+            if (luminosity <= darkThreshold) {
+                factor = 1; // 100% alb
+            } else if (luminosity >= lightThreshold) {
+                factor = 0; // 100% negru
+            } else {
+                // Interpolează între 1 (alb) și 0 (negru)
+                // Când luminozitatea crește de la darkThreshold la lightThreshold
+                factor = 1 - ((luminosity - darkThreshold) / (lightThreshold - darkThreshold));
+            }
+
+            // Calculăm componentele RGB
+            const r = Math.round(255 * factor); // Când factor e 1, e 255 (alb). Când factor e 0, e 0 (negru)
+            const g = Math.round(255 * factor);
+            const b = Math.round(255 * factor);
+
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+
         // Funcție care verifică luminozitatea și schimbă culoarea textului
         function updateTextColorsBasedOnBackground() {
-            if (!ctx) return; // Asigură-te că canvas-ul este inițializat
+            if (!ctx) return; 
 
             adaptableUIElements.forEach(element => {
-                // Ignoră elementele care sunt ascunse sau active (pe overlay)
                 if (element.classList.contains('hide-ui') || element.classList.contains('active')) {
                     return; 
                 }
 
                 const rect = element.getBoundingClientRect();
-                // Verificăm punctul central al elementului
                 const checkX = rect.left + rect.width / 2;
                 const checkY = rect.top + rect.height / 2;
 
-                const luminosity = getAverageLuminosity(checkX, checkY, 1, 1); // Verificăm un singur pixel central
+                const luminosity = getAverageLuminosity(checkX, checkY, 1, 1); 
 
                 if (luminosity !== null) {
-                    if (luminosity < 128) { // Pragul de luminozitate (jumătatea între 0 și 255)
-                        element.classList.remove('text-dark');
-                        element.classList.add('text-light'); // Fundal închis -> text deschis
-                    } else {
-                        element.classList.remove('text-light');
-                        element.classList.add('text-dark'); // Fundal deschis -> text închis
-                    }
+                    const interpolatedColor = interpolateColor(luminosity);
+                    element.style.color = interpolatedColor;
                 }
             });
         }
 
-        // Rulează check-ul luminozității la un interval regulat
         function startPixelCheckInterval() {
-            // Curăță intervalul existent pentru a preveni multiple instanțe
             if (pixelCheckInterval) {
                 clearInterval(pixelCheckInterval);
             }
-            pixelCheckInterval = setInterval(updateTextColorsBasedOnBackground, 100); // Verifică la fiecare 100ms
+            // Am mărit intervalul la 150ms pentru a da mai mult timp tranziției
+            pixelCheckInterval = setInterval(updateTextColorsBasedOnBackground, 150); 
         }
         
-        // Oprește verificarea pixelilor când overlay-urile sunt active
         function stopPixelCheckInterval() {
             clearInterval(pixelCheckInterval);
             pixelCheckInterval = null;
         }
 
-        // Apel inițial la încărcarea paginii și la redimensionare
         window.addEventListener('load', () => {
             document.body.style.overflow = 'hidden'; 
-            initializeCanvas(); // Inițializează canvas-ul
+            initializeCanvas(); 
             populateColumns();
-            startPixelCheckInterval(); // Pornește verificarea pixelilor
+            startPixelCheckInterval(); 
         });
 
         window.addEventListener('resize', () => {
-            initializeCanvas(); // Re-inițializează canvas-ul la redimensionare
+            initializeCanvas(); 
             populateColumns(); 
-            updateTextColorsBasedOnBackground(); // Actualizează imediat culorile
+            updateTextColorsBasedOnBackground(); 
         });
-
-        // Apelăm updateTextColorsBasedOnBackground la fiecare "scroll" al caruselului (când animația rulează)
-        // Deși animația CSS rulează, putem să forțăm o verificare la un interval.
-        // `setInterval` este o metodă mai robustă pentru a asigura actualizarea continuă.
-
-        // Modificăm funcțiile de toggleOverlay și hideOverlaySmoothly pentru a gestiona intervalul
-        // Când un overlay se deschide, oprim pixel check-ul.
-        // Când un overlay se închide și caruselul redevine activ, repornim pixel check-ul.
-
-        // Modificări în toggleOverlay și hideOverlaySmoothly sunt deja integrate mai sus,
-        // ele includ apeluri la startPixelCheckInterval() și stopPixelCheckInterval().
 
     </script>
 </body>
