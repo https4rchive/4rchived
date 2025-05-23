@@ -13,8 +13,9 @@
             --color-text: #1a1a1a;
             --color-light-gray: #e0e0e0;
             /* Variabile CSS pentru înălțimea scroll-ului dinamic */
-            --scroll-height-left: 0px;
-            --scroll-height-right: 0px;
+            --scroll-height-col1: 0px;
+            --scroll-height-col2: 0px;
+            --scroll-height-col3: 0px;
         }
 
         * {
@@ -36,57 +37,30 @@
             line-height: 1.6;
         }
 
-        /* --- Preloader Styles --- */
-        #preloader {
+        /* --- Global UI Elements container for blend mode --- */
+        .ui-elements-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--color-text); /* Fundal închis pentru preloader */
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.8s ease-out; /* Tranziție pentru închidere */
-            transform-origin: center center;
-            opacity: 1;
+            z-index: 1000; /* Peste imagini, sub overlay-uri */
+            pointer-events: none; /* Permite click-urile să treacă prin container */
         }
 
-        #preloader.hidden {
-            transform: scale(0.01); /* Se micșorează la 1% din dimensiune */
-            opacity: 0; /* Se estompează */
-            pointer-events: none; /* Nu mai interacționează cu evenimentele mouse-ului */
-        }
-
-        .preloader-text {
-            font-family: var(--font-sans);
-            font-weight: 900;
-            font-size: 3rem;
-            color: white;
-            opacity: 1;
-            transition: opacity 0.6s ease-out;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .preloader-text.fade-out {
-            opacity: 0;
-        }
-
-        /* --- Global UI Elements --- */
         .logo-container,
-        .menu-toggle-btn,
         .top-right-menu-text,
         .bottom-right-contact-text {
-            position: fixed;
-            z-index: 1000; /* Peste imagini, sub overlay-uri */
+            position: absolute;
+            z-index: 10;
             opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease; /* Adăugat color pentru tranziție */
+            pointer-events: auto;
+            mix-blend-mode: difference; /* Efect de culori inversate */
+            color: white; /* Culoare inițială pentru blend mode */
         }
 
         .logo-container:hover,
-        .menu-toggle-btn:hover,
         .top-right-menu-text:hover,
         .bottom-right-contact-text:hover {
             opacity: 1;
@@ -99,7 +73,7 @@
             font-size: 28px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: var(--color-text);
+            color: inherit;
             display: block;
             line-height: 1;
             margin-bottom: 5px;
@@ -110,26 +84,37 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #666;
+            color: inherit;
+            opacity: 0.7;
             display: block;
             line-height: 1;
         }
 
         .menu-toggle-btn {
+            position: absolute;
             bottom: 40px;
-            left: 40px;
+            left: 40px; /* Acum X-ul este în stânga jos */
             font-size: 100px;
             line-height: 1;
             cursor: pointer;
             font-weight: 300;
-            color: var(--color-text);
+            color: white; /* Culoare inițială albă pentru '+' pe fundalul de imagini */
             font-family: var(--font-sans);
-            z-index: 1002; /* Peste tot, sub overlay-menu */
+            z-index: 1002; /* Asigură că este deasupra overlay-urilor */
+            opacity: 0.7;
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease, mix-blend-mode 0.3s ease;
+            pointer-events: auto;
+            mix-blend-mode: difference; /* Inițial, pentru a funcționa pe imaginile din fundal */
         }
+        .menu-toggle-btn:hover {
+            opacity: 1;
+        }
+        /* Când mainMenuToggle devine "X" (active) pe un overlay cu fundal solid */
         .menu-toggle-btn.active {
             transform: rotate(90deg);
-            color: white;
-            opacity: 1;
+            color: white; /* Asigură că este alb pe fundalul întunecat al overlay-ului */
+            mix-blend-mode: normal; /* Dezactivează blend mode-ul când e 'X' și vizibil pe overlay */
+            opacity: 1; /* Vizibilitate maximă */
         }
 
         .top-right-menu-text {
@@ -140,12 +125,12 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--color-text);
+            color: inherit;
             transform: rotate(90deg) translateX(100%);
             transform-origin: top right;
             white-space: nowrap;
             cursor: pointer;
-            padding-right: 0; /* Adjusted for consistency */
+            padding-right: 0;
         }
 
         .bottom-right-contact-text {
@@ -156,21 +141,21 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--color-text);
+            color: inherit;
             transform: rotate(-90deg) translateX(100%);
             transform-origin: bottom right;
             white-space: nowrap;
             cursor: pointer;
-            padding-right: 0; /* Adjusted for consistency */
+            padding-right: 0;
         }
         
-        /* Clasă pentru a ascunde elementele UI când un overlay este activ */
+        /* Clasă pentru a ascunde elementele UI */
         .hide-ui {
             opacity: 0 !important;
             pointer-events: none !important;
         }
 
-        /* --- Carusel de Imagini MODIFICAT pentru scroll VERTICAL --- */
+        /* --- Carusel de Imagini MODIFICAT pentru 3 coloane și fără spații --- */
         .image-carousel-container {
             position: absolute;
             top: 0;
@@ -179,49 +164,52 @@
             height: 100%;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Două coloane pe desktop */
-            gap: 0;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 coloane */
+            gap: 0; /* Fără spații */
             z-index: 1;
         }
 
-        .image-column-left, .image-column-right {
+        .image-column { /* Clasă generală pentru coloane */
             display: flex;
             flex-direction: column;
-            height: fit-content; /* Lăsăm conținutul să definească înălțimea */
+            height: fit-content;
             width: 100%;
-            /* Animațiile vor fi setate dinamic prin JS */
-            animation: scrollAnimationColumnLeft linear infinite;
+            /* Animațiile vor fi setate dinamic în JS pentru a asigura sincronizarea */
         }
 
-        .image-column-right {
-            animation-direction: reverse;
-            animation-name: scrollAnimationColumnRight;
-        }
+        .image-column:nth-child(1) { animation: scrollAnimationCol1 linear infinite; }
+        .image-column:nth-child(2) { animation: scrollAnimationCol2 linear infinite; }
+        .image-column:nth-child(3) { animation: scrollAnimationCol3 linear infinite; }
 
-        /* Keyframes pentru animație */
-        @keyframes scrollAnimationColumnLeft {
+
+        @keyframes scrollAnimationCol1 {
             0% { transform: translateY(0); }
-            100% { transform: translateY(calc(-1 * var(--scroll-height-left))); }
+            100% { transform: translateY(calc(-1 * var(--scroll-height-col1))); }
         }
 
-        @keyframes scrollAnimationColumnRight {
-            0% { transform: translateY(calc(-1 * var(--scroll-height-right))); }
+        @keyframes scrollAnimationCol2 {
+            0% { transform: translateY(calc(-1 * var(--scroll-height-col2))); } /* Pornește de jos în sus */
             100% { transform: translateY(0); }
+        }
+
+        @keyframes scrollAnimationCol3 {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(calc(-1 * var(--scroll-height-col3))); }
         }
 
         .image-item {
             width: 100%;
-            height: auto;
+            /* Ajustează înălțimea pentru a se potrivi cu 451x562px */
+            /* width: 451px; */ /* Nu setați o lățime fixă aici, va fi gestionată de grid */
+            height: 562px; /* Înălțime fixă */
+            object-fit: cover; /* Asigură că imaginea umple spațiul fără a se deforma */
             display: block;
-            object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0.5px;
+            /* Elimină bordura albă */
+            border: none; 
+            padding: 0; 
             box-sizing: border-box;
-            min-height: 250px; /* Ajustează la nevoie */
-            max-height: 450px; /* Ajustează la nevoie */
             cursor: pointer;
 
-            /* Tranziții mai smooth pentru filtrare */
             transition: opacity 0.8s ease-in-out, 
                         transform 0.8s ease-in-out, 
                         margin 0.8s ease-in-out; 
@@ -231,67 +219,82 @@
         .image-item.hidden {
             opacity: 0;
             transform: scale(0.7);
-            margin-top: -10px;
-            margin-bottom: -10px;
+            /* margin-top: -10px; */ /* Ajustat pentru a nu lăsa spații albe */
+            /* margin-bottom: -10px; */
+            height: 0; /* O imagine ascunsă nu trebuie să ocupe spațiu */
+            min-height: 0;
+            max-height: 0;
+            overflow: hidden; /* Ascunde conținutul */
             pointer-events: none;
         }
 
         .image-item.visible {
             opacity: 1;
             transform: scale(1);
-            margin-top: 0;
-            margin-bottom: 0;
+            /* margin-top: 0; */
+            /* margin-bottom: 0; */
+            height: 562px; /* Revenire la înălțimea fixă */
+            min-height: auto;
+            max-height: auto;
             pointer-events: auto;
         }
 
-        /* --- OVERLAY MENU --- */
-        .overlay-menu, .overlay-contact {
+        /* --- OVERLAY STYLES --- */
+        .overlay-menu, .overlay-contact, .image-detail-overlay, .overlay-more {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            background-color: rgba(0, 0, 0, 0.88);
-            color: white;
-            z-index: 1001;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transform: translateY(-100%);
+            z-index: 1001; 
             visibility: hidden;
             pointer-events: none;
             transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), 
-                                visibility 0s linear 0.6s, 
-                                pointer-events 0s linear 0.6s;
+                        opacity 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            opacity: 0; 
         }
 
-        .overlay-menu.active, .overlay-contact.active {
+        .overlay-menu, .overlay-contact, .overlay-more { 
+            background-color: rgba(0, 0, 0, 0.88); 
+            transform: translateY(-100%); 
+        }
+        .image-detail-overlay { 
+            background-color: var(--color-bg); 
+            transform: translateX(0); /* Va apărea prin opacity */ 
+        }
+
+
+        .overlay-menu.active, .overlay-contact.active, .image-detail-overlay.active, .overlay-more.active {
             transform: translateY(0);
-            visibility: visible;
-            pointer-events: auto;
-            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            opacity: 1;
+            visibility: visible; 
+            pointer-events: auto; 
         }
 
+        /* --- OVERLAY MENU (Textul trebuie să fie pe stânga) --- */
         .overlay-menu .menu-links {
-            text-align: right;
+            text-align: left; /* Textul pe stânga, conform imaginii */
             max-width: 1200px;
             width: 100%;
-            padding-right: 100px;
+            padding-left: 100px; /* Ajustat pentru a muta textul la dreapta */
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%; /* Ocupă toată înălțimea pentru centrare verticală */
         }
 
         .overlay-menu .menu-links a {
             display: block;
             font-family: var(--font-sans);
-            font-size: 5.5rem;
+            font-size: 5.5rem; /* Mărit pentru a se potrivi cu imaginea */
             font-weight: 900;
             margin: 15px 0;
             text-decoration: none;
             color: white;
             transition: transform 0.3s ease, opacity 0.3s ease;
             line-height: 1;
-            letter-spacing: -1px;
+            letter-spacing: -1px; /* Ajustat pentru aspect */
             text-transform: uppercase;
             text-shadow: 0 0 5px rgba(255,255,255,0.3);
             -webkit-font-smoothing: antialiased;
@@ -301,12 +304,12 @@
         }
 
         .overlay-menu .menu-links a:hover {
-            transform: translateX(-30px);
+            transform: translateX(30px); /* Modificat pentru slide din stânga */
             opacity: 1;
         }
 
         .overlay-menu.active .menu-links a {
-            animation: slideInFromRight 0.6s ease-out forwards;
+            animation: slideInFromLeft 0.6s ease-out forwards; /* Modificat animația */
             opacity: 0;
         }
         .overlay-menu.active .menu-links a:nth-child(1) { animation-delay: 0.1s; }
@@ -314,10 +317,11 @@
         .overlay-menu.active .menu-links a:nth-child(3) { animation-delay: 0.2s; }
         .overlay-menu.active .menu-links a:nth-child(4) { animation-delay: 0.25s; }
         .overlay-menu.active .menu-links a:nth-child(5) { animation-delay: 0.3s; }
-        .overlay-menu.active .menu-links a:nth-child(6) { animation-delay: 0.35s; }
+        .overlay-menu.active .menu-links a:nth-child(6) { animation-delay: 0.35s; } /* Pentru noul link "MORE" */
 
-        @keyframes slideInFromRight {
-            from { opacity: 0; transform: translateX(50px); }
+
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-50px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
@@ -331,8 +335,8 @@
 
         .contact-content {
             width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: 900px; /* Lărgit pentru a se potrivi cu imaginea */
+            margin: 0 auto; /* Centrat */
             display: flex;
             flex-direction: column;
             gap: 40px;
@@ -341,7 +345,7 @@
         }
 
         .contact-header {
-            text-align: left;
+            text-align: left; /* Modificat */
             margin-bottom: 30px;
         }
 
@@ -370,7 +374,7 @@
             font-family: var(--font-sans);
             font-size: 18px;
             font-weight: 500;
-            text-align: right;
+            text-align: left; /* Modificat */
             margin-bottom: 40px;
             color: white;
             line-height: 1.4;
@@ -387,9 +391,9 @@
             font-size: 16px;
             font-weight: 400;
             color: rgba(255, 255, 255, 0.7);
-            text-align: right;
-            max-width: 400px;
-            margin-left: auto;
+            text-align: left; /* Modificat */
+            max-width: 500px; /* Ajustat */
+            margin-left: 0; /* Aliniere la stânga */
             line-height: 1.8;
             margin-bottom: 60px;
         }
@@ -457,33 +461,16 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             transition: background-color 0.3s ease, color 0.3s ease;
-            align-self: flex-end;
-            margin-left: auto;
+            align-self: flex-start; /* Aliniat la stânga */
+            margin-left: 0; /* Aliniat la stânga */
         }
         .submit-button:hover { background-color: var(--color-light-gray); }
 
         /* --- IMAGE DETAIL OVERLAY --- */
         .image-detail-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: var(--color-bg);
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.7s ease-in-out, visibility 0s linear 0.7s;
+            z-index: 2000; 
             display: flex;
             flex-direction: column;
-        }
-
-        .image-detail-overlay.active {
-            visibility: visible;
-            opacity: 1;
-            pointer-events: auto;
-            transition: opacity 0.7s ease-in-out;
         }
 
         .image-detail-overlay .back-button {
@@ -500,6 +487,7 @@
             z-index: 2001;
             opacity: 0.7;
             transition: opacity 0.3s ease;
+            mix-blend-mode: normal; 
         }
         .image-detail-overlay .back-button:hover {
             opacity: 1;
@@ -599,6 +587,66 @@
             display: block;
         }
 
+        /* --- NEW OVERLAY: MORE/EDITORIAL (Textul trebuie să fie pe dreapta) --- */
+        .overlay-more {
+            justify-content: flex-start; /* Aliniere sus */
+            padding-top: 100px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .overlay-more .more-links {
+            text-align: right; /* Aliniere la dreapta conform imaginii */
+            max-width: 1200px;
+            width: 100%;
+            padding-right: 100px; /* Ajustat pentru a împinge textul la stânga */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centrare verticală */
+            height: 100%;
+        }
+
+        .overlay-more .more-links a {
+            display: block;
+            font-family: var(--font-sans);
+            font-size: 5.5rem; /* Mărit pentru a se potrivi cu imaginea */
+            font-weight: 900;
+            margin: 15px 0;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            line-height: 1;
+            letter-spacing: -1px; /* Ajustat pentru aspect */
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            image-rendering: -webkit-optimize-contrast;
+            font-feature-settings: "liga" 0, "clig" 0;
+        }
+
+        .overlay-more .more-links a:hover {
+            transform: translateX(-30px); /* Animație spre stânga la hover */
+            opacity: 1;
+        }
+
+        .overlay-more.active .more-links a {
+            animation: slideInFromRight 0.6s ease-out forwards; /* Animație de intrare de la dreapta */
+            opacity: 0;
+        }
+        .overlay-more.active .more-links a:nth-child(1) { animation-delay: 0.1s; }
+        .overlay-more.active .more-links a:nth-child(2) { animation-delay: 0.15s; }
+        .overlay-more.active .more-links a:nth-child(3) { animation-delay: 0.2s; }
+        .overlay-more.active .more-links a:nth-child(4) { animation-delay: 0.25s; }
+        .overlay-more.active .more-links a:nth-child(5) { animation-delay: 0.3s; }
+        .overlay-more.active .more-links a:nth-child(6) { animation-delay: 0.35s; }
+        .overlay-more.active .more-links a:nth-child(7) { animation-delay: 0.4s; }
+        .overlay-more.active .more-links a:nth-child(8) { animation-delay: 0.45s; }
+        .overlay-more.active .more-links a:nth-child(9) { animation-delay: 0.5s; }
+        .overlay-more.active .more-links a:nth-child(10) { animation-delay: 0.55s; } /* Pentru "MORE" */
+
+
         /* --- MEDIA QUERIES --- */
 
         /* Tablets and smaller desktops (max-width: 1024px) */
@@ -609,7 +657,8 @@
             .menu-toggle-btn { bottom: 30px; left: 30px; font-size: 80px; }
             .top-right-menu-text { top: 30px; font-size: 14px; }
             .bottom-right-contact-text { bottom: 30px; font-size: 14px; }
-            .overlay-menu .menu-links a { font-size: 4.5rem; padding-right: 60px; }
+            .overlay-menu .menu-links { padding-left: 60px; } /* Ajustat */
+            .overlay-menu .menu-links a { font-size: 4.5rem; }
             .overlay-contact { padding-top: 60px; }
             .contact-content { max-width: 700px; padding: 0 30px; }
             .contact-header .title { font-size: 55px; }
@@ -618,7 +667,16 @@
             .contact-form { gap: 15px 30px; }
             .form-group input, .form-group textarea, .form-group select { padding: 12px 0; }
             .submit-button { padding: 12px 25px; font-size: 16px; margin-top: 20px; }
-            .image-item { min-height: 200px; max-height: 350px; }
+            
+            /* Carousel adjustments for 2 columns on tablets */
+            .image-carousel-container {
+                grid-template-columns: 1fr 1fr; /* 2 coloane */
+            }
+            .image-column:nth-child(3) {
+                display: none; /* A treia coloană ascunsă pe tabletă */
+            }
+            .image-item { min-height: 200px; max-height: 350px; height: auto; /* Adjust height for fluid layout */ }
+
 
             /* Image Detail Overlay adjustments */
             .image-detail-overlay .back-button { top: 30px; left: 30px; font-size: 14px; }
@@ -627,13 +685,17 @@
             .detail-text-area .detail-subtitle { font-size: 1rem; margin-bottom: 8px; }
             .detail-text-area .detail-description { font-size: 0.9rem; margin-bottom: 20px; }
             .detail-text-area .detail-read-more { font-size: 0.8rem; }
+
+            /* New Overlay More adjustments */
+            .overlay-more .more-links { padding-right: 60px; }
+            .overlay-more .more-links a { font-size: 4.5rem; }
         }
 
         /* Mobile devices (max-width: 768px) */
         @media(max-width: 768px) {
             .logo-container { top: 20px; left: 20px; }
             .logo .title { font-size: 20px; letter-spacing: 1.5px; }
-            .logo .motto { display: none; } /* Hide motto on mobile */
+            .logo .motto { display: none; } 
 
             .menu-toggle-btn { bottom: 20px; left: 20px; font-size: 60px; }
             
@@ -643,7 +705,7 @@
                 right: 20px;
                 font-size: 12px;
                 letter-spacing: 1px;
-                transform: rotate(0deg) translateX(0); /* Remove rotation */
+                transform: rotate(0deg) translateX(0); 
                 transform-origin: top right;
                 white-space: nowrap;
                 padding-right: 0;
@@ -653,7 +715,7 @@
                 right: 20px;
                 font-size: 12px;
                 letter-spacing: 1px;
-                transform: rotate(0deg) translateX(0); /* Remove rotation */
+                transform: rotate(0deg) translateX(0); 
                 transform-origin: bottom right;
                 white-space: nowrap;
                 padding-right: 0;
@@ -661,49 +723,54 @@
             
             /* Carusel adjustments for mobile */
             .image-carousel-container {
-                grid-template-columns: 1fr; /* Single column */
+                grid-template-columns: 1fr; /* 1 coloană pe mobil */
             }
-            .image-column-right {
-                display: none; /* Hide second column on mobile */
+            .image-column:nth-child(2),
+            .image-column:nth-child(3) {
+                display: none; /* Doar prima coloană vizibilă pe mobil */
             }
-            .image-item { min-height: 180px; max-height: 300px; }
+            .image-item { min-height: 180px; max-height: 300px; height: auto; /* Adjust height for fluid layout */ }
 
             /* Overlay Menu adjustments */
-            .overlay-menu .menu-links { text-align: center; padding-right: 0; }
+            .overlay-menu .menu-links { text-align: left; padding-left: 20px; } /* Aliniere la stânga pe mobil cu padding */
             .overlay-menu .menu-links a { font-size: 3rem; margin: 10px 0; }
 
             /* Overlay Contact adjustments */
             .overlay-contact { padding-top: 40px; }
             .contact-content { max-width: 100%; padding: 0 20px; }
-            .contact-header { text-align: center; margin-bottom: 20px; }
+            .contact-header { text-align: left; margin-bottom: 20px; } /* Revenit la stanga */
             .contact-header .title { font-size: 40px; }
-            .contact-info { text-align: center; margin-bottom: 20px; }
-            .contact-description { text-align: center; margin: 0 auto 30px auto; max-width: none; }
+            .contact-info { text-align: left; margin-bottom: 20px; } /* Revenit la stanga */
+            .contact-description { text-align: left; margin: 0 0 30px 0; max-width: none; } /* Revenit la stanga */
             .contact-form { grid-template-columns: 1fr; gap: 15px; }
-            .submit-button { margin-right: auto; margin-left: auto; }
+            .submit-button { margin-right: auto; margin-left: 0; } /* Aliniat la stanga */
 
             /* Image Detail Overlay adjustments for mobile */
             .image-detail-overlay .detail-content {
-                flex-direction: column; /* Stack text and image vertically */
-                height: auto; /* Allow content to dictate height */
-                overflow-y: auto; /* Enable scrolling if content overflows */
+                flex-direction: column; 
+                height: auto; 
+                overflow-y: auto; 
             }
             .image-detail-overlay .detail-text-area,
             .image-detail-overlay .detail-image-area {
-                width: 100%; /* Take full width */
-                height: auto; /* Height adapts to content */
-                transform: translateX(0); /* Disable horizontal entry animation */
-                opacity: 1; /* Make visible instantly */
-                transition: none; /* Remove complex transitions for performance */
-                padding: 40px 20px; /* Adjusted padding */
-                align-items: center; /* Center align text content */
-                text-align: center;
+                width: 100%; 
+                height: auto; 
+                transform: translateX(0); 
+                opacity: 1; 
+                transition: none; 
+                padding: 40px 20px; 
+                align-items: flex-start; /* Aliniat la stanga */
+                text-align: left; /* Aliniat la stanga */
             }
             .detail-text-area .detail-title { font-size: 3rem; margin-bottom: 10px; }
             .detail-text-area .detail-subtitle { font-size: 1rem; margin-bottom: 5px; }
             .detail-text-area .detail-description { font-size: 0.9rem; max-width: none; margin-left: 0; margin-bottom: 20px; }
-            .detail-text-area .detail-read-more { margin: 0 auto; display: block; width: fit-content; } /* Center button */
+            .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; } /* Aliniat la stanga */
             .image-detail-overlay .back-button { top: 20px; left: 20px; font-size: 12px; }
+
+            /* New Overlay More adjustments */
+            .overlay-more .more-links { text-align: right; padding-right: 20px; } /* Aliniere la dreapta pe mobil cu padding */
+            .overlay-more .more-links a { font-size: 3rem; }
         }
 
         /* Smaller mobile devices (max-width: 480px) */
@@ -722,37 +789,39 @@
             .contact-description { font-size: 13px; }
             .form-group input, .form-group textarea, .form-group select { padding: 10px 0; }
             .submit-button { padding: 10px 20px; font-size: 14px; }
-            .image-item { min-height: 150px; max-height: 250px; }
+            .image-item { min-height: 150px; max-height: 250px; height: auto; /* Adjust height for fluid layout */ }
 
             /* Image Detail Overlay adjustments for smaller mobile */
             .image-detail-overlay .detail-text-area { padding: 30px 15px; }
             .detail-text-area .detail-title { font-size: 2.5rem; }
             .detail-text-area .detail-subtitle { font-size: 0.9rem; }
             .detail-text-area .detail-description { font-size: 0.85rem; }
+
+            /* New Overlay More adjustments */
+            .overlay-more .more-links a { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
-    <div id="preloader">
-        <span class="preloader-text">4RCHIVED</span>
-    </div>
-
-    <div class="logo-container">
-        <div class="logo" id="mainLogo">
-            <span class="title">4RCHIVED</span>
-            <span class="motto">An archive for the locals</span>
+    <div class="ui-elements-container">
+        <div class="logo-container">
+            <div class="logo" id="mainLogo">
+                <span class="title">4RCHIVED</span>
+                <span class="motto">An archive for the locals</span>
+            </div>
         </div>
+
+        <div class="menu-toggle-btn" id="mainMenuToggle">+</div>
+
+        <div class="top-right-menu-text" id="menuText">MENU</div>
+
+        <div class="bottom-right-contact-text" id="contactLink">CONTACT</div>
     </div>
-
-    <div class="menu-toggle-btn" id="mainMenuToggle">+</div>
-
-    <div class="top-right-menu-text" id="menuText">MENU</div>
-
-    <div class="bottom-right-contact-text" id="contactLink">CONTACT</div>
 
     <div class="image-carousel-container">
-        <div class="image-column-left"></div>
-        <div class="image-column-right"></div>
+        <div class="image-column" id="imageColumn1"></div>
+        <div class="image-column" id="imageColumn2"></div>
+        <div class="image-column" id="imageColumn3"></div>
     </div>
 
     <div class="image-detail-overlay" id="imageDetailOverlay">
@@ -777,7 +846,21 @@
             <a href="#" data-filter="portrait">PORTRAIT</a>
             <a href="#" data-filter="urban">URBAN</a>
             <a href="#" data-filter="events">EVENTS</a>
-            <a href="#" data-filter="more">MORE</a>
+            <a href="#" id="moreCategoriesLink">MORE</a> </div>
+    </div>
+
+    <div class="overlay-more" id="overlayMore">
+        <div class="more-links">
+            <a href="#" data-filter="black_white">BLACK & WHITE</a>
+            <a href="#" data-filter="bride">BRIDE</a>
+            <a href="#" data-filter="groom">GROOM</a>
+            <a href="#" data-filter="couple">COUPLE</a>
+            <a href="#" data-filter="party">PARTY</a>
+            <a href="#" data-filter="film">FILM</a>
+            <a href="#" data-filter="details">DETAILS</a>
+            <a href="#" data-filter="press">PRESS</a>
+            <a href="#" data-filter="editorial">EDITORIAL</a>
+            <a href="#" data-filter="more_sub">MORE</a>
         </div>
     </div>
 
@@ -838,13 +921,16 @@
     <script>
         const overlayMenu = document.getElementById('overlayMenu');
         const overlayContact = document.getElementById('overlayContact');
+        const overlayMore = document.getElementById('overlayMore'); // Noul overlay "MORE"
         const mainMenuToggle = document.getElementById('mainMenuToggle');
         const contactLink = document.getElementById('contactLink');
         const menuText = document.getElementById('menuText');
         const mainLogo = document.getElementById('mainLogo');
         const imageCarouselContainer = document.querySelector('.image-carousel-container');
-        const imageColumnLeft = document.querySelector('.image-column-left');
-        const imageColumnRight = document.querySelector('.image-column-right');
+        const imageColumn1 = document.getElementById('imageColumn1');
+        const imageColumn2 = document.getElementById('imageColumn2');
+        const imageColumn3 = document.getElementById('imageColumn3');
+        const imageColumns = [imageColumn1, imageColumn2, imageColumn3];
 
         // Elemente pentru detaliu imagine
         const imageDetailOverlay = document.getElementById('imageDetailOverlay');
@@ -854,452 +940,320 @@
         const detailDescription = document.getElementById('detailDescription');
         const detailReadMore = document.getElementById('detailReadMore');
         const detailImage = document.getElementById('detailImage');
-
-        // Elemente preloader
-        const preloader = document.getElementById('preloader');
-        const preloaderText = document.querySelector('.preloader-text');
+        
+        const moreCategoriesLink = document.getElementById('moreCategoriesLink'); // Linkul "MORE" din meniul principal
 
         // Flag pentru a ști dacă caruselul rulează sau este oprit
         let scrollAnimationActive = true; 
 
         // Definire un array cu toate imaginile (sursa + categorie + detalii)
-        // ATENȚIE: Asigură-te că numele fișierelor și extensiile corespund EXACT cu cele din folderul tău 'images'!
-        const allImageSources = [
-            {
-                src: "images/IMG_0015.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Portret Cinematic",
-                subtitle: "Sesiune Studio",
-                description: "Un portret captivant, realizat într-un studio, evidențiind jocul de lumini și umbre.",
-                readMoreLink: "#" // Adaugă un link relevant
-            },
-            {
-                src: "images/IMG_0037.jpeg",
-                category: "wedding", // Ajustează categoria
-                title: "Nuntă de Vis",
-                subtitle: "Detalii Elegante",
-                description: "Am surprins esența unei zile de nuntă pline de bucurie și detalii rafinate.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_1803.jpeg",
-                category: "urban", // Ajustează categoria
-                title: "Orașul Noaptea",
-                subtitle: "Peisaj Urban Nocturn",
-                description: "Vibrația și luminile orașului după lăsarea serii, surprinse într-o serie de fotografii urbane.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_1830.jpeg",
-                category: "events", // Ajustează categoria
-                title: "Eveniment Corporate",
-                subtitle: "Lansare de Produs",
-                description: "Fotografii profesioniste de la un eveniment corporate de anvergură, cu accent pe discursuri și interacțiuni.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_1863.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Expresie și Emoție",
-                subtitle: "Portret Introspectiv",
-                description: "Un portret care explorează profunzimea emoțiilor și expresia umană, cu detalii sugestive.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_1881.jpeg",
-                category: "wedding", // Ajustează categoria
-                title: "Momente de Bucurie",
-                subtitle: "Ceremonia Nupțială",
-                description: "Capturarea momentelor cheie ale ceremoniei de nuntă, de la emoție la celebrare.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_1972.jpeg",
-                category: "urban", // Ajustează categoria
-                title: "Texturi Urbane",
-                subtitle: "Străzi și Arhitectură",
-                description: "O privire detaliată asupra texturilor și formelor din peisajul urban cotidian.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2022.jpeg",
-                category: "events", // Ajustează categoria
-                title: "Gala Anuală",
-                subtitle: "Eleganță și Networking",
-                description: "Atmosfera sofisticată și oportunitățile de networking de la o gală anuală exclusivistă.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2044.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Portret Natural",
-                subtitle: "Lumină Ambientală",
-                description: "Un portret realizat cu lumină naturală, accentuând frumusețea simplă și autenticitatea subiectului.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2253.jpeg",
-                category: "wedding", // Ajustează categoria
-                title: "Dragoste Fără Limite",
-                subtitle: "Cuplu Îndrăgostit",
-                description: "Imagini care surprind legătura profundă și dragostea dintre miri, într-un cadru romantic.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2311.jpeg",
-                category: "urban", // Ajustează categoria
-                title: "Contraste Urbane",
-                subtitle: "Arhitectură Modernă",
-                description: "Jocuri de linii și forme în arhitectura modernă a orașului, surprinse într-un stil minimalist.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2318.jpeg",
-                category: "events", // Ajustează categoria
-                title: "Conferință Inspirațională",
-                subtitle: "Sesiuni și Discuții",
-                description: "Fotografii de la o conferință plină de idei noi și discuții constructive, surprinzând dinamica evenimentului.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2319.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Privire Pătunzătoare",
-                subtitle: "Portret Artistic",
-                description: "Un portret cu o privire intensă, care invită la reflecție și la contemplarea artei fotografice.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2374.jpg", // ATENȚIE: extensia este .jpg (litere mici)
-                category: "wedding", // Ajustează categoria
-                title: "Eleganță Nupțială",
-                subtitle: "Detaliu Rochie Mireasă",
-                description: "Un prim-plan al rochiei de mireasă, subliniind detaliile fine și broderia delicată.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_2405.JPG", // ATENȚIE: extensia este .JPG (litere mari)
-                category: "urban", // Ajustează categoria
-                title: "Orașul la Răsărit",
-                subtitle: "Luminile Dimineții",
-                description: "O imagine a orașului la primele ore ale dimineții, cu o lumină caldă și o atmosferă liniștită.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_7894.jpeg",
-                category: "events", // Ajustează categoria
-                title: "Festival de Muzică",
-                subtitle: "Energie pe Scenă",
-                description: "Vibrația și entuziasmul unui festival de muzică, surprinse în plină acțiune, pe scenă și în public.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_8778.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Portret Cinematic",
-                subtitle: "Lumină Dramatică",
-                description: "Un portret cu o iluminare dramatică, punând în valoare trăsăturile subiectului într-un stil artistic.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_8823.jpeg",
-                category: "wedding", // Ajustează categoria
-                title: "Nuntă de Basm",
-                subtitle: "Cuplu Fericit",
-                description: "Momente de fericire și bucurie de la o nuntă memorabilă, într-un decor de basm.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_8954.jpeg",
-                category: "urban", // Ajustează categoria
-                title: "Reflecții Urbane",
-                subtitle: "Orașul în Oglindă",
-                description: "Reflecții ale clădirilor și luminilor orașului în suprafețe lucioase, creând o perspectivă unică.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_9546.jpeg",
-                category: "events", // Ajustează categoria
-                title: "Vernisaj de Artă",
-                subtitle: "Expoziție Modernă",
-                description: "Atmosfera vibrantă a unui vernisaj de artă, cu opere expuse și interacțiuni artistice.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_9554.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Studiu de Caracter",
-                subtitle: "Chipuri Autentice",
-                description: "Un portret profund, care explorează caracterul și povestea din spatele chipului subiectului.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_9623.jpeg",
-                category: "wedding", // Ajustează categoria
-                title: "Petrecere de Nuntă",
-                subtitle: "Distracție și Dans",
-                description: "Imagini pline de energie de la petrecerea de nuntă, surprinzând momentele de distracție și dans.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_9771.jpeg",
-                category: "urban", // Ajustează categoria
-                title: "Street Photography",
-                subtitle: "Scene Cotidiene",
-                description: "Fotografii de stradă autentice, capturând momente din viața de zi cu zi a orașului.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_9955.jpeg",
-                category: "events", // Ajustează categoria
-                title: "Concert Live",
-                subtitle: "Emoție pe Scenă",
-                description: "Fotografii dinamice de la un concert live, surprinzând energia artistului și a publicului.",
-                readMoreLink: "#"
-            },
-            {
-                src: "images/IMG_9982.jpeg",
-                category: "portrait", // Ajustează categoria
-                title: "Eleganță Timeless",
-                subtitle: "Portret Clasic",
-                description: "Un portret clasic, care emană eleganță și rafinament, realizat cu atenție la detalii.",
-                readMoreLink: "#"
-            }
+        const images = [
+            { src: 'https://via.placeholder.com/451x562/FF5733/FFFFFF?text=Image+1', category: 'wedding', title: 'Elegant Wedding', subtitle: 'A beautiful ceremony in the heart of the city.', description: 'This intimate wedding captured the essence of true love amidst stunning architecture and joyful celebrations. Every detail, from the floral arrangements to the heartfelt vows, created an unforgettable experience for the happy couple and their guests.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/33FF57/000000?text=Image+2', category: 'portrait', title: 'Dramatic Portrait', subtitle: 'Capturing raw emotions.', description: 'A study in light and shadow, this portrait aims to reveal the unspoken stories within. The subject\'s gaze draws you in, conveying a depth of emotion that transcends the frame, making it a truly powerful piece.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/3357FF/FFFFFF?text=Image+3', category: 'urban', title: 'City Life', subtitle: 'The pulse of the metropolis.', description: 'Through the lens, the vibrant energy of the city comes alive. From bustling streets to serene hidden alleys, this series explores the diverse facets of urban existence, highlighting both the chaos and the quiet moments.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/FF33A1/FFFFFF?text=Image+4', category: 'events', title: 'Grand Gala', subtitle: 'An evening of celebration.', description: 'Documenting the glamour and excitement of a high-profile event, these photographs capture the key moments and the atmosphere. Every smile, every toast, and every performance contributed to a memorable night.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/FFD433/000000?text=Image+5', category: 'wedding', title: 'Rustic Wedding', subtitle: 'Love in the countryside.', description: 'Set against a picturesque rural backdrop, this wedding embraced natural beauty and warm, intimate moments. The golden hour light painted the scene perfectly, creating timeless memories for the couple.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/33FFF2/000000?text=Image+6', category: 'portrait', title: 'Candid Moments', subtitle: 'Authentic expressions.', description: 'These portraits focus on capturing subjects in their most genuine state, revealing their unique personalities through natural interactions and unposed shots. The beauty lies in the simplicity and honesty of the moments.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/8A33FF/FFFFFF?text=Image+7', category: 'urban', title: 'Street Photography', subtitle: 'Unseen corners of the city.', description: 'An ongoing exploration of urban landscapes and the unexpected beauty found within everyday scenes. This collection highlights the interplay of architecture, light, and human presence in the urban environment.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/FF5733/FFFFFF?text=Image+8', category: 'events', title: 'Corporate Event', subtitle: 'Professional excellence.', description: 'From conferences to award ceremonies, these images document the professionalism and energy of corporate gatherings. The focus is on capturing key speakers, networking, and the overall success of the event.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/33FF57/000000?text=Image+9', category: 'black_white', title: 'Abstract Photography', subtitle: 'Exploring form and color.', description: 'Pushing the boundaries of conventional photography, this series delves into abstract compositions, focusing on textures, patterns, and light to evoke emotions and challenge perception.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/3357FF/FFFFFF?text=Image+10', category: 'editorial', title: 'Nature\'s Canvas', subtitle: 'Capturing the wild beauty.', description: 'A tribute to the natural world, showcasing breathtaking landscapes, intricate flora, and captivating wildlife. Each image invites the viewer to appreciate the raw and untamed artistry of nature.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/FF33A1/FFFFFF?text=Image+11', category: 'bride', title: 'Bridal Elegance', subtitle: 'Grace and beauty.', description: 'A collection celebrating the timeless elegance of brides, capturing their joy and grace on their special day, from candid moments to stunning portraits.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/FFD433/000000?text=Image+12', category: 'groom', title: 'Groom\'s Style', subtitle: 'Refined and debonair.', description: 'Showcasing the unique style and personality of grooms, focusing on their preparations, interactions, and proud moments.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/33FFF2/000000?text=Image+13', category: 'couple', title: 'Couple\'s Journey', subtitle: 'Two hearts, one path.', description: 'Intimate photographs of couples, capturing their bond, chemistry, and shared moments of happiness and love, from engagement sessions to anniversaries.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/8A33FF/FFFFFF?text=Image+14', category: 'party', title: 'Party Vibes', subtitle: 'Joyful celebrations.', description: 'Energetic shots from various parties and gatherings, highlighting the fun, laughter, and vibrant atmosphere of social events.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/FF5733/FFFFFF?text=Image+15', category: 'film', title: 'Analog Charm', subtitle: 'The beauty of film photography.', description: 'A series dedicated to the unique aesthetic and nostalgic feel of photographs captured on film, showcasing its distinctive grain and colors.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/33FF57/000000?text=Image+16', category: 'details', title: 'Intricate Details', subtitle: 'The small things matter.', description: 'Focusing on the fine details that often go unnoticed, from intricate decorations to subtle expressions, adding depth and richness to the narrative.', readMore: '#' },
+            { src: 'https://via.placeholder.com/451x562/3357FF/FFFFFF?text=Image+17', category: 'press', title: 'Press Features', subtitle: 'As seen in...', description: 'A compilation of works featured in various publications, showcasing the breadth and recognition of the photography.', readMore: '#' }
         ];
 
-        let currentFilter = 'all'; // Categoria curentă de filtrare
-        const scrollSpeed = 50; // Secunde pentru o rotație completă (mai mare = mai lent)
+        // Duplicăm imaginile pentru a crea un efect de scroll infinit.
+        // Asigură-te că ai suficiente imagini (cel puțin 2 seturi complete) pentru a umple spațiul vizibil al ambelor coloane și a permite scroll-ul infinit.
+        const duplicatedImages = [...images, ...images, ...images]; // Două seturi în plus pentru a fi sigur
 
-        // Funcție pentru a genera elementele de imagine
-        function createImageElement(image, originalIndex) {
-            const img = document.createElement('img');
-            img.src = image.src;
-            img.alt = image.title || `Image ${originalIndex + 1}`;
-            img.classList.add('image-item');
-            img.dataset.category = image.category;
-            img.dataset.index = originalIndex; // Adaugă un index pentru a referi ușor detaliile
-            img.classList.add('visible'); 
+        // Funcția de populare a coloanelor
+        function populateColumns(filterCategory = 'all') {
+            imageColumns.forEach(column => column.innerHTML = ''); // Golim toate coloanele
 
-            img.addEventListener('click', () => openImageDetail(originalIndex));
-            return img;
-        }
+            // Filtrează imaginile în funcție de categorie
+            const filteredImages = duplicatedImages.filter(image => 
+                filterCategory === 'all' || 
+                image.category === filterCategory || 
+                (filterCategory === 'more_sub' && ['black_white', 'bride', 'groom', 'couple', 'party', 'film', 'details', 'press', 'editorial'].includes(image.category))
+            );
 
-        // Funcție pentru a umple coloanele cu imagini
-        function populateImageColumns(imagesToDisplay) {
-            imageColumnLeft.innerHTML = ''; // Curăță coloanele
-            imageColumnRight.innerHTML = '';
+            // Distribuim imaginile filtratelor în cele 3 coloane (sau 2, sau 1, în funcție de media query)
+            filteredImages.forEach((image, index) => {
+                const imgElement = document.createElement('img');
+                imgElement.src = image.src;
+                imgElement.alt = image.title;
+                imgElement.classList.add('image-item');
+                imgElement.dataset.category = image.category;
+                imgElement.dataset.title = image.title;
+                imgElement.dataset.subtitle = image.subtitle;
+                imgElement.dataset.description = image.description;
+                imgElement.dataset.readMore = image.readMore;
 
-            // Asigurăm că avem suficiente imagini pentru scroll continuu
-            // Duplicăm imaginile de cel puțin 3 ori, pentru a fi siguri că înălțimea depășește ecranul
-            // și pentru a evita "săriturile" la resetarea animației.
-            let duplicatedImages = [];
-            while (duplicatedImages.length < imagesToDisplay.length * 3) {
-                duplicatedImages = duplicatedImages.concat(imagesToDisplay);
-            }
-
-            duplicatedImages.forEach((image, index) => {
-                // IMPORTANT: Găsește indexul original al imaginii în allImageSources, nu indexul din duplicatedImages
-                const originalIndex = allImageSources.findIndex(item => item.src === image.src && item.category === image.category && item.title === image.title); 
-                const img = createImageElement(image, originalIndex); 
-                if (index % 2 === 0) { // Alternăm imaginile între coloane
-                    imageColumnLeft.appendChild(img);
-                } else {
-                    imageColumnRight.appendChild(img);
-                }
+                // Calculăm coloana în care ar trebui să meargă imaginea
+                const columnIndex = index % imageColumns.length;
+                imageColumns[columnIndex].appendChild(imgElement);
             });
 
-            updateScrollHeights(); // Recalculează înălțimile de scroll după populare
+            // Re-calculează înălțimile după popularea coloanelor
+            updateScrollHeights();
+            // Restartează animațiile
+            restartScrollAnimations();
         }
 
-        // Funcție pentru a actualiza înălțimile de scroll și a reporni animațiile
+        // Funcția pentru a calcula și seta înălțimile scroll-ului dinamic
         function updateScrollHeights() {
-            // Asigură că animațiile sunt oprite înainte de a recalcula și a le reseta
-            imageColumnLeft.style.animationPlayState = 'paused';
-            imageColumnRight.style.animationPlayState = 'paused';
-
-            // Resetăm translateY pentru a evita "sărituri" vizuale la resetarea animației
-            imageColumnLeft.style.transform = 'translateY(0)';
-            imageColumnRight.style.transform = 'translateY(0)';
-            
-            // Forțează un reflow DOM pentru a asigura că browserul recalculează înălțimile corect
-            void imageColumnLeft.offsetWidth; 
-            void imageColumnRight.offsetWidth;
-
-            // Recalculează înălțimile necesare pentru o "rotație" completă
-            // Fiecare coloană are imagini duplicate, deci înălțimea "reală" a setului unic
-            // este jumătate din scrollHeight-ul total al coloanei.
-            const leftHeight = imageColumnLeft.scrollHeight / 2; 
-            const rightHeight = imageColumnRight.scrollHeight / 2;
-
-            document.documentElement.style.setProperty('--scroll-height-left', `${leftHeight}px`);
-            document.documentElement.style.setProperty('--scroll-height-right', `${rightHeight}px`);
-
-            // Setează durata animațiilor CSS (dacă nu e deja setată)
-            imageColumnLeft.style.animationDuration = `${scrollSpeed}s`;
-            imageColumnRight.style.animationDuration = `${scrollSpeed}s`;
-
-            // Reia animațiile dacă scroll-ul este activ
-            if (scrollAnimationActive) {
-                imageColumnLeft.style.animationPlayState = 'running';
-                imageColumnRight.style.animationPlayState = 'running';
-            }
-        }
-
-        // Inițializează caruselul cu toate imaginile la start
-        populateImageColumns(allImageSources);
-
-        // Funcția pentru a deschide/închide overlay-uri
-        function toggleOverlay(overlayElement, uiElementsToHide) {
-            const isActive = overlayElement.classList.toggle('active');
-            mainMenuToggle.classList.toggle('active', isActive && overlayElement === overlayMenu); 
-            
-            uiElementsToHide.forEach(el => {
-                el.classList.toggle('hide-ui', isActive);
-            });
-
-            // Oprește/pornește animația de scroll
-            if (isActive) {
-                imageColumnLeft.style.animationPlayState = 'paused';
-                imageColumnRight.style.animationPlayState = 'paused';
-                scrollAnimationActive = false;
-            } else {
-                // Reluăm animația doar dacă nu este deja oprită de un alt overlay
-                if (!overlayMenu.classList.contains('active') && !overlayContact.classList.contains('active') && !imageDetailOverlay.classList.contains('active')) {
-                    imageColumnLeft.style.animationPlayState = 'running';
-                    imageColumnRight.style.animationPlayState = 'running';
-                    scrollAnimationActive = true;
+            // Calculează înălțimea de scroll pentru fiecare coloană în parte
+            imageColumns.forEach((column, index) => {
+                // Dacă coloana este ascunsă prin CSS (media queries), setați înălțimea la 0
+                if (column.style.display === 'none' || column.offsetWidth === 0) {
+                     document.documentElement.style.setProperty(`--scroll-height-col${index + 1}`, `0px`);
+                } else {
+                    // Dacă e vizibilă, calculează înălțimea reală
+                    const scrollHeight = column.scrollHeight / 3; // Împărțim la 3 pentru că avem 3 seturi duplicate
+                    document.documentElement.style.setProperty(`--scroll-height-col${index + 1}`, `${scrollHeight}px`);
                 }
-            }
+            });
         }
 
-        // Evenimente pentru deschiderea/închiderea overlay-urilor
+        // Funcția pentru a restarta animațiile de scroll
+        function restartScrollAnimations() {
+            imageColumns.forEach((column, index) => {
+                column.style.animation = 'none';
+                void column.offsetWidth; // Force reflow
+                if (scrollAnimationActive) {
+                    // Alternăm direcția animației pentru coloana 2
+                    const animationName = (index === 1) ? `scrollAnimationCol${index + 1} reverse linear infinite` : `scrollAnimationCol${index + 1} linear infinite`;
+                    column.style.animation = animationName;
+                    column.style.animationDuration = '40s'; // Poți ajusta viteza
+                }
+            });
+        }
+
+        // Functie helper pentru a ascunde un overlay fluid
+        function hideOverlaySmoothly(overlayElement, callback = null) {
+            if (!overlayElement.classList.contains('active')) {
+                if (callback) callback();
+                return;
+            }
+
+            if (overlayElement === imageDetailOverlay) {
+                overlayElement.style.opacity = '0';
+            } else {
+                overlayElement.style.transform = 'translateY(-100%)';
+            }
+            
+            overlayElement.classList.remove('active'); 
+
+            const onTransitionEnd = () => {
+                overlayElement.removeEventListener('transitionend', onTransitionEnd);
+                overlayElement.style.visibility = 'hidden';
+                overlayElement.style.pointerEvents = 'none';
+                
+                if (overlayElement === imageDetailOverlay) {
+                     overlayElement.style.opacity = ''; 
+                } else {
+                     overlayElement.style.transform = ''; 
+                }
+
+                if (callback) callback();
+            };
+
+            overlayElement.addEventListener('transitionend', onTransitionEnd);
+        }
+
+        // Funcția principală pentru a activa/dezactiva overlay-uri
+        function toggleOverlay(overlayElement) {
+            const isActive = overlayElement.classList.contains('active');
+            
+            // Logica de închidere
+            if (isActive) {
+                hideOverlaySmoothly(overlayElement, () => {
+                    showMainUIElements();
+                    scrollAnimationActive = true;
+                    restartScrollAnimations();
+                });
+                return;
+            }
+
+            // Logica de deschidere a unui nou overlay:
+            
+            // 1. Ascunde toate celelalte overlay-uri deschise fluent
+            if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
+            if (overlayContact.classList.contains('active')) hideOverlaySmoothly(overlayContact);
+            if (imageDetailOverlay.classList.contains('active')) hideOverlaySmoothly(imageDetailOverlay);
+            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); // Noul overlay "MORE"
+
+            // 2. Afișează imediat overlay-ul nou
+            overlayElement.style.visibility = 'visible';
+            overlayElement.style.pointerEvents = 'auto';
+            overlayElement.classList.add('active'); 
+
+            // 3. Ascunde elementele UI principale
+            hideMainUIElements();
+
+            // 4. Transformă mainMenuToggle în "X" și asigură vizibilitatea pe fundal solid
+            mainMenuToggle.classList.add('active'); 
+            mainMenuToggle.style.color = 'white'; 
+            mainMenuToggle.style.mixBlendMode = 'normal'; 
+
+            scrollAnimationActive = false; 
+            restartScrollAnimations();
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        // Functie ajutatoare pentru a ascunde elementele UI principale (excluzând mainMenuToggle)
+        function hideMainUIElements() {
+            menuText.classList.add('hide-ui');
+            contactLink.classList.add('hide-ui');
+            mainLogo.classList.add('hide-ui');
+            backButton.classList.add('hide-ui'); 
+        }
+
+        // Functie ajutatoare pentru a afișa elementele UI principale
+        function showMainUIElements() {
+            menuText.classList.remove('hide-ui');
+            contactLink.classList.remove('hide-ui');
+            mainLogo.classList.remove('hide-ui');
+            
+            mainMenuToggle.classList.remove('active'); 
+            mainMenuToggle.style.color = 'white'; // Culoare inițială albă pentru '+'
+            mainMenuToggle.style.mixBlendMode = 'difference'; // Reset la blend mode-ul inițial
+
+            backButton.classList.add('hide-ui'); 
+        }
+
+
+        // Modifică event listener-ul pentru mainMenuToggle
         mainMenuToggle.addEventListener('click', () => {
-            toggleOverlay(overlayMenu, [mainLogo, contactLink, menuText, imageCarouselContainer]);
-            overlayContact.classList.remove('active'); // Închide contact dacă meniul se deschide
-            imageDetailOverlay.classList.remove('active'); // Închide detalii imagine dacă meniul se deschide
+            // Verifică care overlay este activ și închide-l
+            if (overlayMenu.classList.contains('active')) {
+                toggleOverlay(overlayMenu);
+            } else if (overlayContact.classList.contains('active')) {
+                toggleOverlay(overlayContact);
+            } else if (imageDetailOverlay.classList.contains('active')) {
+                hideOverlaySmoothly(imageDetailOverlay, () => {
+                    showMainUIElements(); 
+                    scrollAnimationActive = true;
+                    restartScrollAnimations();
+                });
+            } else if (overlayMore.classList.contains('active')) { // Adăugat pentru noul overlay "MORE"
+                toggleOverlay(overlayMore);
+            }
+            else {
+                // Dacă niciun overlay nu este activ, deschide meniul
+                toggleOverlay(overlayMenu);
+            }
         });
 
         menuText.addEventListener('click', () => {
-            toggleOverlay(overlayMenu, [mainLogo, contactLink, menuText, imageCarouselContainer]);
-            overlayContact.classList.remove('active'); 
-            imageDetailOverlay.classList.remove('active'); 
+            toggleOverlay(overlayMenu);
         });
 
         contactLink.addEventListener('click', () => {
-            toggleOverlay(overlayContact, [mainLogo, mainMenuToggle, menuText, imageCarouselContainer]);
-            overlayMenu.classList.remove('active'); 
-            mainMenuToggle.classList.remove('active'); 
-            imageDetailOverlay.classList.remove('active'); 
+            toggleOverlay(overlayContact);
         });
 
-        // Evenimente pentru închiderea overlay-ului la click în afara elementelor specifice
-        overlayMenu.addEventListener('click', (e) => {
-            if (e.target === overlayMenu) {
-                toggleOverlay(overlayMenu, [mainLogo, contactLink, menuText, imageCarouselContainer]);
-            }
+        // Adaugă event listener pentru noul link "MORE" din meniul principal
+        moreCategoriesLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleOverlay(overlayMore); // Deschide overlay-ul "MORE"
         });
 
-        overlayContact.addEventListener('click', (e) => {
-            if (e.target === overlayContact) {
-                toggleOverlay(overlayContact, [mainLogo, mainMenuToggle, menuText, imageCarouselContainer]);
-            }
-        });
+        // Funcția pentru afișarea detaliilor imaginii
+        function showImageDetail(image) {
+            // Închide toate celelalte overlay-uri înainte de a deschide detaliile imaginii
+            if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
+            if (overlayContact.classList.contains('active')) hideOverlaySmoothly(overlayContact);
+            if (overlayMore.classList.contains('active')) hideOverlaySmoothly(overlayMore); // Noul overlay "MORE"
 
-        // Logica de filtrare a imaginilor
-        const menuLinks = document.querySelectorAll('.overlay-menu .menu-links a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const filter = e.target.dataset.filter;
-                currentFilter = filter; // Actualizează filtrul curent
-                filterImages(filter);
-                toggleOverlay(overlayMenu, [mainLogo, contactLink, menuText, imageCarouselContainer]); // Închide meniul după selecție
+            detailImage.src = image.src;
+            detailImage.alt = image.title;
+            detailTitle.textContent = image.title;
+            detailSubtitle.textContent = image.subtitle;
+            detailDescription.textContent = image.description;
+            detailReadMore.href = image.readMore;
+
+            imageDetailOverlay.style.visibility = 'visible';
+            imageDetailOverlay.style.pointerEvents = 'auto';
+            imageDetailOverlay.classList.add('active');
+            
+            hideMainUIElements(); 
+
+            backButton.classList.remove('hide-ui'); 
+            
+            mainMenuToggle.classList.add('active'); 
+            mainMenuToggle.style.color = 'white'; 
+            mainMenuToggle.style.mixBlendMode = 'normal'; 
+            
+            scrollAnimationActive = false;
+            restartScrollAnimations();
+        }
+
+        // Funcția pentru ascunderea detaliilor imaginii (apelată și de backButton)
+        backButton.addEventListener('click', () => {
+            hideOverlaySmoothly(imageDetailOverlay, () => {
+                showMainUIElements(); 
+                scrollAnimationActive = true;
+                restartScrollAnimations();
             });
         });
 
-        function filterImages(category) {
-            let filteredImages = [];
-            if (category === 'all') {
-                filteredImages = allImageSources;
-            } else {
-                filteredImages = allImageSources.filter(img => img.category === category);
+
+        // Adaugă event listener pentru click pe link-urile din meniul overlay (principal)
+        document.querySelectorAll('.overlay-menu .menu-links a').forEach(link => {
+            // Exclude linkul "MORE" din această logică, el are propriul listener
+            if (link.id !== 'moreCategoriesLink') {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const filterCategory = e.target.dataset.filter;
+                    populateColumns(filterCategory);
+                    toggleOverlay(overlayMenu); 
+                });
             }
-            // Re-populează coloanele cu imaginile filtrate
-            populateImageColumns(filteredImages);
-        }
-
-        // Logica pentru overlay-ul de detalii imagine
-        function openImageDetail(index) {
-            const imageData = allImageSources[index];
-            if (!imageData) {
-                console.error("Image data not found for index:", index);
-                return;
-            }
-            detailTitle.textContent = imageData.title;
-            detailSubtitle.textContent = imageData.subtitle;
-            detailDescription.textContent = imageData.description;
-            detailReadMore.href = imageData.readMoreLink;
-            detailImage.src = imageData.src;
-            detailImage.alt = imageData.title;
-
-            imageDetailOverlay.classList.add('active');
-            // Ascunde elementele UI principale
-            mainLogo.classList.add('hide-ui');
-            mainMenuToggle.classList.add('hide-ui');
-            contactLink.classList.add('hide-ui');
-            menuText.classList.add('hide-ui');
-            imageCarouselContainer.classList.add('hide-ui'); // Ascunde caruselul
-
-            // Oprește animația caruselului
-            imageColumnLeft.style.animationPlayState = 'paused';
-            imageColumnRight.style.animationPlayState = 'paused';
-            scrollAnimationActive = false; // Marchează animația ca inactivă
-        }
-
-        backButton.addEventListener('click', () => {
-            imageDetailOverlay.classList.remove('active');
-            // Arată elementele UI principale
-            mainLogo.classList.remove('hide-ui');
-            mainMenuToggle.classList.remove('hide-ui');
-            contactLink.classList.remove('hide-ui');
-            menuText.classList.remove('hide-ui');
-            imageCarouselContainer.classList.remove('hide-ui'); // Arată caruselul din nou
-
-            // Reia animația caruselului
-            imageColumnLeft.style.animationPlayState = 'running';
-            imageColumnRight.style.animationPlayState = 'running';
-            scrollAnimationActive = true; // Marchează animația ca activă
         });
 
-        // Recalculează înălțimile la redimensionarea ferestrei
-        window.addEventListener('resize', () => {
-            // Re-populează cu filtrul curent pentru a ajusta imaginile și a recalcula înălțimile
-            filterImages(currentFilter); 
+        // Adaugă event listener pentru click pe link-urile din noul overlay "MORE"
+        document.querySelectorAll('.overlay-more .more-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const filterCategory = e.target.dataset.filter;
+                populateColumns(filterCategory);
+                toggleOverlay(overlayMore); // Închide overlay-ul "MORE"
+            });
         });
 
-        // --- Preloader Logic ---
+
+        // Adaugă event listener pentru click pe imagini
+        imageCarouselContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('image-item')) {
+                const image = {
+                    src: e.target.src,
+                    title: e.target.dataset.title,
+                    subtitle: e.target.dataset.subtitle,
+                    description: e.target.dataset.description,
+                    readMore: e.target.dataset.readMore
+                };
+                showImageDetail(image);
+            }
+        });
+
+        // Initial setup - populate columns immediately as there's no preloader
         window.addEventListener('load', () => {
-            // Estompează textul preloaderului
-            preloaderText.classList.add('fade-out');
-
-            // După ce textul se estompează, inițiază tranziția de închidere a preloaderului
-            setTimeout(() => {
-                preloader.classList.add('hidden');
-                // Asigură-te că preloaderul este complet eliminat după tranziție
-                preloader.addEventListener('transitionend', () => {
-                    preloader.remove();
-                    // Permite scroll-ul pe body după ce preloaderul a dispărut
-                    document.body.style.overflow = 'auto'; 
-
-                    // Asigură că animația caruselului începe după ce preloaderul a dispărut
-                    // Acest lucru este important pentru a evita ca animația să ruleze în fundal înainte de a fi vizibilă
-                    imageColumnLeft.style.animationPlayState = 'running';
-                    imageColumnRight.style.animationPlayState = 'running';
-                    scrollAnimationActive = true;
-                }, { once: true });
-            }, 600); // Durata tranziției textului (0.6s)
+            document.body.style.overflow = 'hidden'; // Keep body overflow hidden for vertical scroll
+            populateColumns();
         });
 
+        // Initial setup
+        window.addEventListener('resize', () => {
+            // Repopulează coloanele la resize pentru a re-calcula imaginile vizibile/ascunse
+            // în funcție de media queries și numărul de coloane
+            populateColumns(); 
+        });
     </script>
 </body>
 </html>
