@@ -746,24 +746,9 @@
             .submit-button { margin-right: auto; margin-left: 0; } /* Aliniat la stanga */
 
             /* Image Detail Overlay adjustments for mobile */
-            .image-detail-overlay .detail-content {
-                flex-direction: column; 
-                height: auto; 
-                overflow-y: auto; 
-            }
-            .image-detail-overlay .detail-text-area,
-            .image-detail-overlay .detail-image-area {
-                width: 100%; 
-                height: auto; 
-                transform: translateX(0); 
-                opacity: 1; 
-                transition: none; 
-                padding: 40px 20px; 
-                align-items: flex-start; /* Aliniat la stanga */
-                text-align: left; /* Aliniat la stanga */
-            }
-            .detail-text-area .detail-title { font-size: 3rem; margin-bottom: 10px; }
-            .detail-text-area .detail-subtitle { font-size: 1rem; margin-bottom: 5px; }
+            .image-detail-overlay .detail-text-area { padding: 30px 15px; }
+            .detail-text-area .detail-title { font-size: 3rem; }
+            .detail-text-area .detail-subtitle { font-size: 1rem; }
             .detail-text-area .detail-description { font-size: 0.9rem; max-width: none; margin-left: 0; margin-bottom: 20px; }
             .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; } /* Aliniat la stanga */
             .image-detail-overlay .back-button { top: 20px; left: 20px; font-size: 12px; }
@@ -947,24 +932,32 @@
         let scrollAnimationActive = true; 
 
         // Definire un array cu toate imaginile (sursa + categorie + detalii)
+        // AM ACTUALIZAT CĂILE IMAGINILOR CONFORM FIȘIERELOR TALE ÎNCĂRCATE
         const images = [
-            { src: 'https://via.placeholder.com/451x562/FF5733/FFFFFF?text=Image+1', category: 'wedding', title: 'Elegant Wedding', subtitle: 'A beautiful ceremony in the heart of the city.', description: 'This intimate wedding captured the essence of true love amidst stunning architecture and joyful celebrations. Every detail, from the floral arrangements to the heartfelt vows, created an unforgettable experience for the happy couple and their guests.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/33FF57/000000?text=Image+2', category: 'portrait', title: 'Dramatic Portrait', subtitle: 'Capturing raw emotions.', description: 'A study in light and shadow, this portrait aims to reveal the unspoken stories within. The subject\'s gaze draws you in, conveying a depth of emotion that transcends the frame, making it a truly powerful piece.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/3357FF/FFFFFF?text=Image+3', category: 'urban', title: 'City Life', subtitle: 'The pulse of the metropolis.', description: 'Through the lens, the vibrant energy of the city comes alive. From bustling streets to serene hidden alleys, this series explores the diverse facets of urban existence, highlighting both the chaos and the quiet moments.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/FF33A1/FFFFFF?text=Image+4', category: 'events', title: 'Grand Gala', subtitle: 'An evening of celebration.', description: 'Documenting the glamour and excitement of a high-profile event, these photographs capture the key moments and the atmosphere. Every smile, every toast, and every performance contributed to a memorable night.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/FFD433/000000?text=Image+5', category: 'wedding', title: 'Rustic Wedding', subtitle: 'Love in the countryside.', description: 'Set against a picturesque rural backdrop, this wedding embraced natural beauty and warm, intimate moments. The golden hour light painted the scene perfectly, creating timeless memories for the couple.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/33FFF2/000000?text=Image+6', category: 'portrait', title: 'Candid Moments', subtitle: 'Authentic expressions.', description: 'These portraits focus on capturing subjects in their most genuine state, revealing their unique personalities through natural interactions and unposed shots. The beauty lies in the simplicity and honesty of the moments.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/8A33FF/FFFFFF?text=Image+7', category: 'urban', title: 'Street Photography', subtitle: 'Unseen corners of the city.', description: 'An ongoing exploration of urban landscapes and the unexpected beauty found within everyday scenes. This collection highlights the interplay of architecture, light, and human presence in the urban environment.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/FF5733/FFFFFF?text=Image+8', category: 'events', title: 'Corporate Event', subtitle: 'Professional excellence.', description: 'From conferences to award ceremonies, these images document the professionalism and energy of corporate gatherings. The focus is on capturing key speakers, networking, and the overall success of the event.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/33FF57/000000?text=Image+9', category: 'black_white', title: 'Abstract Photography', subtitle: 'Exploring form and color.', description: 'Pushing the boundaries of conventional photography, this series delves into abstract compositions, focusing on textures, patterns, and light to evoke emotions and challenge perception.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/3357FF/FFFFFF?text=Image+10', category: 'editorial', title: 'Nature\'s Canvas', subtitle: 'Capturing the wild beauty.', description: 'A tribute to the natural world, showcasing breathtaking landscapes, intricate flora, and captivating wildlife. Each image invites the viewer to appreciate the raw and untamed artistry of nature.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/FF33A1/FFFFFF?text=Image+11', category: 'bride', title: 'Bridal Elegance', subtitle: 'Grace and beauty.', description: 'A collection celebrating the timeless elegance of brides, capturing their joy and grace on their special day, from candid moments to stunning portraits.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/FFD433/000000?text=Image+12', category: 'groom', title: 'Groom\'s Style', subtitle: 'Refined and debonair.', description: 'Showcasing the unique style and personality of grooms, focusing on their preparations, interactions, and proud moments.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/33FFF2/000000?text=Image+13', category: 'couple', title: 'Couple\'s Journey', subtitle: 'Two hearts, one path.', description: 'Intimate photographs of couples, capturing their bond, chemistry, and shared moments of happiness and love, from engagement sessions to anniversaries.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/8A33FF/FFFFFF?text=Image+14', category: 'party', title: 'Party Vibes', subtitle: 'Joyful celebrations.', description: 'Energetic shots from various parties and gatherings, highlighting the fun, laughter, and vibrant atmosphere of social events.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/FF5733/FFFFFF?text=Image+15', category: 'film', title: 'Analog Charm', subtitle: 'The beauty of film photography.', description: 'A series dedicated to the unique aesthetic and nostalgic feel of photographs captured on film, showcasing its distinctive grain and colors.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/33FF57/000000?text=Image+16', category: 'details', title: 'Intricate Details', subtitle: 'The small things matter.', description: 'Focusing on the fine details that often go unnoticed, from intricate decorations to subtle expressions, adding depth and richness to the narrative.', readMore: '#' },
-            { src: 'https://via.placeholder.com/451x562/3357FF/FFFFFF?text=Image+17', category: 'press', title: 'Press Features', subtitle: 'As seen in...', description: 'A compilation of works featured in various publications, showcasing the breadth and recognition of the photography.', readMore: '#' }
+            { src: 'images/IMG_0015.jpeg', category: 'wedding', title: 'Nunta Elegantă', subtitle: 'O ceremonie frumoasă în inima orașului.', description: 'Această nuntă intimă a surprins esența iubirii adevărate, pe fundalul unei arhitecturi uimitoare și al unor sărbători pline de bucurie.', readMore: '#' },
+            { src: 'images/IMG_0037.jpeg', category: 'portrait', title: 'Portret Dramatic', subtitle: 'Capturând emoții brute.', description: 'Un studiu de lumină și umbră, acest portret își propune să dezvăluie poveștile nespuse din interior.', readMore: '#' },
+            { src: 'images/IMG_1803.jpeg', category: 'urban', title: 'Viața Urbană', subtitle: 'Pulsul metropolei.', description: 'Prin lentilă, energia vibrantă a orașului prinde viață. De la străzi aglomerate la alei ascunse și liniștite.', readMore: '#' },
+            { src: 'images/IMG_1830.jpeg', category: 'events', title: 'Marele Gala', subtitle: 'O seară de sărbătoare.', description: 'Documentând farmecul și emoția unui eveniment de anvergură, aceste fotografii surprind momentele cheie și atmosfera.', readMore: '#' },
+            { src: 'images/IMG_1863.jpeg', category: 'wedding', title: 'Nuntă Rustică', subtitle: 'Dragoste la țară.', description: 'Amplasată pe un fundal rural pitoresc, această nuntă a îmbrățișat frumusețea naturală și momente calde, intime.', readMore: '#' },
+            { src: 'images/IMG_1881.jpeg', category: 'portrait', title: 'Momente Sincere', subtitle: 'Expresii autentice.', description: 'Aceste portrete se concentrează pe surprinderea subiecților în starea lor cea mai autentică, dezvăluind personalitățile lor unice.', readMore: '#' },
+            { src: 'images/IMG_1972.jpeg', category: 'urban', title: 'Fotografie de Stradă', subtitle: 'Colțuri neștiute ale orașului.', description: 'O explorare continuă a peisajelor urbane și a frumuseții neașteptate găsite în scenele de zi cu zi.', readMore: '#' },
+            { src: 'images/IMG_2022.jpeg', category: 'events', title: 'Eveniment Corporativ', subtitle: 'Excelență profesională.', description: 'De la conferințe la ceremonii de premiere, aceste imagini documentează profesionalismul și energia adunărilor corporative.', readMore: '#' },
+            { src: 'images/IMG_2044.jpeg', category: 'black_white', title: 'Alb și Negru', subtitle: 'Frumusețea atemporală.', description: 'O colecție de fotografii în alb și negru, explorând contrastele, texturile și emoțiile, într-o manieră clasică și elegantă.', readMore: '#' },
+            { src: 'images/IMG_2253.jpeg', category: 'editorial', title: 'Editorial de Modă', subtitle: 'Stil și viziune artistică.', description: 'Imagini create pentru publicații de modă, punând accent pe estetică, design și povestea din spatele fiecărei ținute.', readMore: '#' },
+            { src: 'images/IMG_2311.jpeg', category: 'bride', title: 'Eleganța Miresei', subtitle: 'Grație și frumusețe.', description: 'O colecție care celebrează eleganța atemporală a mireselor, surprinzând bucuria și grația lor în ziua cea mare.', readMore: '#' },
+            { src: 'images/IMG_2319.jpeg', category: 'groom', title: 'Stilul Mirelui', subtitle: 'Rafinat și elegant.', description: 'Prezentând stilul și personalitatea unică a mirilor, concentrându-se pe pregătirile, interacțiunile și momentele lor de mândrie.', readMore: '#' },
+            { src: 'images/IMG_2374.JPG', category: 'couple', title: 'Călătoria Cuplului', subtitle: 'Două inimi, un singur drum.', description: 'Fotografii intime ale cuplurilor, surprinzând legătura, chimia și momentele lor împărtășite de fericire și iubire.', readMore: '#' },
+            { src: 'images/IMG_2405.JPG', category: 'party', title: 'Vibe-uri de Petrecere', subtitle: 'Sărbători pline de bucurie.', description: 'Imagini energice de la diverse petreceri și adunări, evidențiind distracția, râsetele și atmosfera vibrantă a evenimentelor sociale.', readMore: '#' },
+            { src: 'images/IMG_7894.jpeg', category: 'film', title: 'Farmecul Analog', subtitle: 'Frumusețea fotografiei pe film.', description: 'O serie dedicată esteticii unice și senzației nostalgice a fotografiilor realizate pe film, prezentând granulația și culorile sale distinctive.', readMore: '#' },
+            { src: 'images/IMG_8778.jpeg', category: 'details', title: 'Detalii Intricate', subtitle: 'Lucrurile mici contează.', description: 'Concentrându-se pe detaliile fine care adesea trec neobservate, de la decorațiuni complicate la expresii subtile, adăugând profunzime și bogăție narațiunii.', readMore: '#' },
+            { src: 'images/IMG_8823.jpeg', category: 'press', title: 'Apariții în Presă', subtitle: 'Așa cum se vede în...', description: 'O compilație de lucrări prezentate în diverse publicații, demonstrând amploarea și recunoașterea fotografiei.', readMore: '#' },
+            { src: 'images/IMG_8954.jpeg', category: 'editorial', title: 'Natura', subtitle: 'Pânza naturii.', description: 'Un omagiu adus lumii naturale, prezentând peisaje uimitoare, floră complexă și faună captivantă.', readMore: '#' },
+            { src: 'images/IMG_9546.jpeg', category: 'wedding', title: 'Momente din Nunta', subtitle: 'Amintiri prețioase.', description: 'Capturi de momente autentice și pline de emoție din ziua nunții, surprinse cu delicatețe și atenție.', readMore: '#' },
+            { src: 'images/IMG_9554.jpeg', category: 'portrait', title: 'Portret cu Stil', subtitle: 'Expresie artistică.', description: 'Un portret contemporan care pune accent pe personalitatea subiectului și pe jocul de lumini și umbre pentru a crea o imagine puternică.', readMore: '#' },
+            { src: 'images/IMG_9623.jpeg', category: 'urban', title: 'Peisaje Urbane', subtitle: 'Arhitectura și viața orașului.', description: 'O serie de fotografii care explorează geometria, lumina și interacțiunea umană în mediul urban, transformând străzile în opere de artă.', readMore: '#' },
+            { src: 'images/IMG_9771.jpeg', category: 'events', title: 'Concerte și Festivaluri', subtitle: 'Energia scenei.', description: 'Imagini dinamice surprinse la concerte și festivaluri, capturând atmosfera vibrantă, emoția publicului și performanțele artiștilor.', readMore: '#' },
+            { src: 'images/IMG_9955.jpeg', category: 'black_white', title: 'Contrast Urban', subtitle: 'Străzi în nuanțe de gri.', description: 'Fotografii alb-negru care explorează contrastul puternic și compozițiile grafice găsite în arhitectura și viața de zi cu zi a orașului.', readMore: '#' },
+            { src: 'images/IMG_9982.jpeg', category: 'editorial', title: 'Poveste Vizuală', subtitle: 'Fotoreportaj.', description: 'Imagini cu o narativă puternică, create pentru a spune o poveste sau a documenta un subiect într-o manieră vizuală captivantă.', readMore: '#' }
         ];
 
         // Duplicăm imaginile pentru a crea un efect de scroll infinit.
