@@ -627,7 +627,7 @@
             .image-column:nth-child(3) {
                 display: none;
             }
-            .image-item { min-height: 200px; max-height: 300px; height: auto; } /* Adjusted from 350px */
+            .image-item { min-height: 200px; max-height: 350px; height: auto; }
 
             .image-detail-overlay .back-button { top: 30px; left: 30px; font-size: 14px; }
             .image-detail-overlay .detail-text-area { padding: 60px; }
@@ -638,51 +638,35 @@
         }
 
         @media(max-width: 768px) {
-            .logo-container {
-                top: 20px; /* Adjusted from 25px to give more space from top */
-                left: 20px; /* Adjusted from 25px */
-            }
-            .logo .title {
-                font-size: 20px; /* Adjusted from 22px, was 20px in initial code for 768px */
-                letter-spacing: 1.5px;
-            }
-            .logo .motto {
-                display: none; /* Hide motto on mobile */
-            }
+            .logo-container { top: 20px; left: 20px; }
+            .logo .title { font-size: 20px; letter-spacing: 1.5px; }
+            .logo .motto { display: none; } /* Ascunde motto-ul pe mobil */
 
-            .menu-toggle-btn {
-                bottom: 20px; /* Adjusted from 25px */
-                left: 20px; /* Adjusted from 25px */
-                font-size: 45px; /* Adjusted from 50px */
-                width: auto;
-                height: auto;
-            }
-            .category-display-text {
-                bottom: 20px; /* Adjusted from 25px */
-                left: 70px; /* Adjusted from 80px - move it slightly left, then adjust font-size */
-                font-size: 28px; /* Adjusted from 30px */
-            }
+            .menu-toggle-btn { bottom: 20px; left: 20px; font-size: 60px; }
+            .category-display-text { bottom: 20px; left: 90px; font-size: 40px; }
 
-            /* Repositioning for top-right and bottom-right elements on mobile */
+            /* Repoziționare pentru elementele din dreapta sus și jos pe mobil */
             .top-right-menu-text {
-                top: 20px; /* Adjusted from 25px */
-                right: 20px; /* Adjusted from 25px for more space */
+                top: 20px;
+                right: 20px; /* Aliniat la dreapta */
                 font-size: 12px;
                 letter-spacing: 1px;
-                transform: none; /* Cancel rotation */
-                transform-origin: center; /* Reset transform origin */
+                transform: none; /* Anulează rotația */
+                transform-origin: center;
+                /* Resetează originea transformării */
                 white-space: nowrap;
-                padding-right: 0; /* Cancel previous padding */
+                padding-right: 0; /* Anulează padding-ul anterior */
             }
             .bottom-right-contact-text {
-                bottom: 20px; /* Adjusted from 25px */
-                right: 75px; /* Adjusted from 85px. Might need fine-tuning. */
+                bottom: 20px;
+                right: 80px; /* Aliniat la dreapta, lângă "MENU" */
                 font-size: 12px;
                 letter-spacing: 1px;
-                transform: none; /* Cancel rotation */
-                transform-origin: center; /* Reset transform origin */
+                transform: none; /* Anulează rotația */
+                transform-origin: center;
+                /* Resetează originea transformării */
                 white-space: nowrap;
-                padding-right: 0; /* Cancel previous padding */
+                padding-right: 0; /* Anulează padding-ul anterior */
             }
 
             .image-carousel-container {
@@ -694,59 +678,60 @@
             }
             .image-item { min-height: 180px; max-height: 300px; height: auto; }
 
-            .overlay-menu .menu-links { text-align: center; padding-right: 0; } /* Center on mobile */
-            .overlay-menu .menu-links a { font-size: 3.5rem; margin: 10px 0; } /* Adjusted */
+            .overlay-menu .menu-links { text-align: center; padding-right: 0; } /* Centrare pe mobil */
+            .overlay-menu .menu-links a { font-size: 3rem; margin: 10px 0; }
 
             .overlay-contact { padding-top: 40px; }
             .contact-content { max-width: 100%; padding: 0 20px; }
             .contact-header { text-align: center; margin-bottom: 20px; }
-            .contact-header .title { font-size: 40px; } /* Adjusted */
             .contact-info { text-align: center; margin-bottom: 20px; }
-            .contact-description { text-align: center; margin: 0 auto 30px auto; max-width: none; }
+            .contact-description { text-align: center;
+            margin: 0 auto 30px auto; max-width: none; }
             .contact-form { grid-template-columns: 1fr; gap: 15px; }
-            .submit-button { margin: 20px auto 0 auto; } /* Center button */
+            .submit-button { margin: 20px auto 0 auto; } /* Centrare buton */
 
             .image-detail-overlay .detail-text-area { padding: 30px 15px; }
-            .image-detail-overlay .detail-content { flex-direction: column; } /* Stack images and text */
+            .image-detail-overlay .detail-content { flex-direction: column; } /* Stivuiește imaginile și textul */
             .image-detail-overlay .detail-text-area,
             .image-detail-overlay .detail-image-area {
-                width: 100%; /* Full width */
-                height: auto; /* Auto height */
-                transform: none; /* Cancel transforms */
-                opacity: 1; /* Ensure visibility */
+                width: 100%; /* Lățime completă */
+                height: auto; /* Înălțime automată */
+                transform: none; /* Anulează transformările */
+                opacity: 1; /* Asigură vizibilitatea */
             }
             .detail-text-area .detail-title { font-size: 3rem; }
             .detail-text-area .detail-subtitle { font-size: 1rem; }
-            .detail-text-area .detail-description { font-size: 0.9rem; max-width: none; margin-left: 0; margin-bottom: 20px; }
-            .detail-text-area .detail-read-more { margin: 0; display: inline-block; width: auto; }
+            .detail-text-area .detail-description { font-size: 0.9rem; max-width: none;
+            margin-left: 0; margin-bottom: 20px; }
+            .detail-text-area .detail-read-more { margin: 0;
+            display: inline-block; width: auto; }
         }
 
         @media(max-width: 480px) {
-            .logo-container { top: 10px; left: 10px; } /* Adjusted from 15px */
-            .logo .title { font-size: 14px; /* Adjusted from 16px */ letter-spacing: 1px; } /* Adjusted */
-            .menu-toggle-btn { bottom: 10px; left: 10px; font-size: 30px; /* Adjusted from 35px */ }
-            .category-display-text { bottom: 10px; left: 45px; /* Adjusted from 55px */ font-size: 18px; /* Adjusted from 20px */ }
-            .top-right-menu-text {
-                top: 10px; /* Adjusted from 15px */
-                right: 10px; /* Adjusted from 15px */
-                font-size: 9px; /* Adjusted from 10px */
+            .logo-container { top: 15px; left: 15px; }
+            .logo .title { font-size: 18px; }
+            .menu-toggle-btn { bottom: 15px; left: 15px; font-size: 45px; }
+            .category-display-text { bottom: 15px; left: 70px; font-size: 28px; }
+            .top-right-menu-text, .bottom-right-contact-text {
+                top: 15px;
+                right: 15px;
+                font-size: 10px;
             }
+            /* Ajustare poziție contact pentru a nu se suprapune cu meniu */
             .bottom-right-contact-text {
-                bottom: 10px; /* Adjusted from 15px */
-                right: 50px; /* Adjusted from 60px */
-                font-size: 9px; /* Adjusted from 10px */
+                 right: 75px; /* Ajustează pentru a se potrivi alături de MENU */
             }
 
-            .overlay-menu .menu-links a { font-size: 1.8rem; /* Adjusted from 2.2rem */ margin: 6px 0; } /* Adjusted */
+            .overlay-menu .menu-links a { font-size: 2.2rem; }
 
             .overlay-contact { padding-top: 30px; }
             .contact-content { padding: 0 15px; }
-            .contact-header .title { font-size: 24px; /* Adjusted from 30px */ }
+            .contact-header .title { font-size: 30px; }
             .contact-info { font-size: 14px; }
             .contact-description { font-size: 13px; }
             .form-group input, .form-group textarea, .form-group select { padding: 10px 0; }
             .submit-button { padding: 10px 20px; font-size: 14px; }
-            .image-item { min-height: 120px; max-height: 180px; height: auto; } /* Adjusted from 200px */
+            .image-item { min-height: 150px; max-height: 250px; height: auto; }
 
             .image-detail-overlay .detail-text-area { padding: 30px 15px; }
             .detail-text-area .detail-title { font-size: 2.5rem; }
@@ -913,11 +898,23 @@
             { src: 'images/Captură de ecran din 2025-05-23 la 15.36.51.jpg', category: 'vinyl', title: 'Spinning Records', subtitle: 'The art of sound.', description: 'Exploring the visual poetry of turntables and vinyl, focusing on the interplay of light and shadow on the grooves.', readMore: '#' }
         ];
         // Duplicăm imaginile de mai multe ori pentru a asigura un scroll fluid și o buclă continuă
+        // Multiplicăm de 5 ori pentru a avea suficient conținut pentru o defilare lină
         const duplicatedImages = [...images, ...images, ...images, ...images, ...images];
         let scrollPositions = [0, 0, 0]; // Pozițiile curente de scroll pentru fiecare coloană
-        let animationFrames = [null, null, null]; // Pentru a stoca ID-urile requestAnimationFrame
+        let animationFrames = [null, null, null];
+        // Pentru a stoca ID-urile requestAnimationFrame
         const scrollSpeed = 0.5; // Viteza de scroll în pixeli pe frame (ajustează pentru a controla viteza)
         const animationDirections = ['normal', 'reverse', 'normal']; // Direcțiile pentru fiecare coloană
+
+        function getActiveColumns() {
+            if (window.innerWidth <= 768) {
+                return [imageColumn1]; // Only 1 column visible [cite: 165]
+            } else if (window.innerWidth <= 1024) {
+                return [imageColumn1, imageColumn2]; // 2 columns visible [cite: 143]
+            } else {
+                return [imageColumn1, imageColumn2, imageColumn3]; // 3 columns visible
+            }
+        }
 
         function populateColumns(filterCategory = 'all') {
             imageColumns.forEach(column => column.innerHTML = '');
@@ -927,6 +924,7 @@
                 filterCategory === 'all' ||
                 image.category === filterCategory
             );
+
             // Update category display text
             if (filterCategory === 'all') {
                 categoryDisplayText.textContent = 'ALL';
@@ -937,20 +935,23 @@
             }
             categoryDisplayText.classList.add('active'); // Show the text
 
-            filteredImages.forEach((image, index) => {
-                const imgElement = document.createElement('img');
-                imgElement.src = image.src;
-                imgElement.alt = image.title;
-                imgElement.classList.add('image-item');
-                imgElement.dataset.category = image.category;
-                imgElement.dataset.title = image.title;
-                imgElement.dataset.subtitle = image.subtitle;
-                imgElement.dataset.description = image.description;
-                imgElement.dataset.readMore = image.readMore;
-
-                const columnIndex = index % imageColumns.length;
-                imageColumns[columnIndex].appendChild(imgElement);
+            const activeColumns = getActiveColumns();
+            activeColumns.forEach((column, colIndex) => {
+                const imagesForThisColumn = filteredImages.filter((_, idx) => idx % activeColumns.length === colIndex);
+                imagesForThisColumn.forEach(image => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = image.src;
+                    imgElement.alt = image.title;
+                    imgElement.classList.add('image-item');
+                    imgElement.dataset.category = image.category;
+                    imgElement.dataset.title = image.title;
+                    imgElement.dataset.subtitle = image.subtitle;
+                    imgElement.dataset.description = image.description;
+                    imgElement.dataset.readMore = image.readMore;
+                    column.appendChild(imgElement);
+                });
             });
+
             // Resetează pozițiile de scroll la repopulare
             scrollPositions = [0, 0, 0];
             imageColumns.forEach((column, index) => {
@@ -962,31 +963,95 @@
         // Functia principală de animație pentru o coloană
         function animateScroll(columnIndex) {
             const column = imageColumns[columnIndex];
-            // Calculează înălțimea unei singure bucle de imagini filtrată
-            // Trebuie să ținem cont de câte ori am duplicat imaginile.
-            const totalFilteredImages = duplicatedImages.filter(image =>
-                currentFilterCategory === 'all' ||
-                image.category === currentFilterCategory
-            ).length;
-            const imagesPerColumn = Math.ceil(totalFilteredImages / imageColumns.length);
-            const singleLoopHeight = imagesPerColumn * 562; // 562px este înălțimea fiecărei imagini
+            
+            // If column is hidden by CSS, do not animate it.
+            if (column.style.display === 'none' || getComputedStyle(column).display === 'none') {
+                animationFrames[columnIndex] = null; // Clear animation frame for hidden columns
+                return;
+            }
 
-            const currentSpeed = (animationDirections[columnIndex] === 'normal') ?
-                scrollSpeed : -scrollSpeed;
+            // Calculate the total height of one full set of original (non-duplicated) filtered images
+            // for this specific column. This is more complex because images have variable heights.
+            // A simpler approach for infinite scroll with variable heights is to ensure
+            // that the duplicated content is long enough, and then calculate the loop point
+            // based on when the first "set" of duplicated content has scrolled out of view.
+
+            // Let's first ensure we have enough content to scroll.
+            // The `duplicatedImages` array ensures plenty of content.
+            // We need to find the height of ONE full "cycle" of content for this column.
+
+            let singleLoopHeight = 0;
+            const originalFilteredImages = images.filter(image =>
+                currentFilterCategory === 'all' || image.category === currentFilterCategory
+            );
+            
+            const activeColumns = getActiveColumns();
+            const imagesForThisColumnIndex = columnIndex % activeColumns.length;
+            
+            // Check if this column is actually active
+            const isColumnActive = activeColumns.includes(column);
+
+            if (isColumnActive) {
+                // Get the elements corresponding to the *original* (non-duplicated) images
+                // that would be placed in this column.
+                const tempDiv = document.createElement('div');
+                tempDiv.style.visibility = 'hidden';
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.width = column.offsetWidth + 'px'; // Match column width for accurate height calculation
+                document.body.appendChild(tempDiv);
+
+                originalFilteredImages.forEach((image, imgIndex) => {
+                    if (imgIndex % activeColumns.length === imagesForThisColumnIndex) {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = image.src;
+                        imgElement.classList.add('image-item');
+                        // Ensure it takes the correct computed style height
+                        if (window.innerWidth <= 1024) { // Apply auto height if on tablet/mobile
+                           imgElement.style.height = 'auto';
+                           imgElement.style.maxHeight = (window.innerWidth <= 768) ? '300px' : '350px';
+                           imgElement.style.minHeight = (window.innerWidth <= 768) ? '180px' : '200px';
+                        } else {
+                            imgElement.style.height = '562px';
+                        }
+                        tempDiv.appendChild(imgElement);
+                    }
+                });
+
+                // Force layout to get computed heights
+                // This might be expensive, so consider optimizing if performance is an issue.
+                singleLoopHeight = tempDiv.offsetHeight;
+                document.body.removeChild(tempDiv);
+
+                // If no images are filtered for this column, or column is empty
+                if (singleLoopHeight === 0 && column.children.length > 0) {
+                    // Fallback: Use the height of the first block of duplicated images
+                    // This is a rough estimation. For perfect looping, you need to know the
+                    // exact height of one full set of *original* images.
+                    // Assuming 5 duplications, calculate height of first 1/5th of the column
+                    singleLoopHeight = column.scrollHeight / 5; 
+                } else if (singleLoopHeight === 0) { // If column is truly empty
+                    singleLoopHeight = 1; // Prevent division by zero
+                }
+            } else {
+                animationFrames[columnIndex] = null; // Don't animate inactive columns
+                return;
+            }
+
+
+            const currentSpeed = (animationDirections[columnIndex] === 'normal') ? scrollSpeed : -scrollSpeed;
 
             scrollPositions[columnIndex] += currentSpeed;
 
             // Logica de buclă infinită
             if (animationDirections[columnIndex] === 'normal') {
-                if (scrollPositions[columnIndex] >= singleLoopHeight) {
+                if (scrollPositions[columnIndex] >= singleLoopHeight && singleLoopHeight > 0) {
                     scrollPositions[columnIndex] -= singleLoopHeight;
                 }
             } else { // 'reverse'
-                if (scrollPositions[columnIndex] <= 0) {
+                if (scrollPositions[columnIndex] <= 0 && singleLoopHeight > 0) {
                     scrollPositions[columnIndex] += singleLoopHeight;
                 }
             }
-
             column.style.transform = `translateY(${-scrollPositions[columnIndex]}px)`;
             if (scrollAnimationActive) { // Continuă animația doar dacă este activă
                 animationFrames[columnIndex] = requestAnimationFrame(() => animateScroll(columnIndex));
@@ -1068,7 +1133,6 @@
                 overlayElement.style.opacity = '';
                 overlayElement.style.transform = '';
 
-
                 if (callback) callback();
             };
 
@@ -1082,8 +1146,7 @@
                     showMainUIElements();
                     scrollAnimationActive = true;
                     populateColumns(currentFilterCategory); // Repopulează cu categoria curentă
-                    // `populateColumns` va apela `startScrollAnimations`
-                    startPixelCheckInterval();
+                    startPixelCheckInterval(); // Repornește verificarea pixelilor
                 });
                 return;
             }
@@ -1097,7 +1160,7 @@
             overlayElement.classList.add('active');
 
             hideMainUIElements();
-            stopPixelCheckInterval();
+            stopPixelCheckInterval(); // Oprește verificarea pixelilor
             mainMenuToggle.classList.add('active');
             mainMenuToggle.style.color = 'white';
 
@@ -1135,7 +1198,7 @@
                     showMainUIElements();
                     scrollAnimationActive = true;
                     populateColumns(currentFilterCategory); // Repopulează cu categoria curentă
-                    startPixelCheckInterval();
+                    startPixelCheckInterval(); // Repornește verificarea pixelilor
                 });
 
             } else {
@@ -1168,7 +1231,7 @@
             // So we don't need to manually set them here.
 
             hideMainUIElements();
-            stopPixelCheckInterval();
+            stopPixelCheckInterval(); // Oprește verificarea pixelilor
 
             backButton.classList.remove('hide-ui');
 
@@ -1183,7 +1246,7 @@
                 showMainUIElements();
                 scrollAnimationActive = true;
                 populateColumns(currentFilterCategory); // Repopulează cu categoria curentă
-                startPixelCheckInterval();
+                startPixelCheckInterval(); // Repornește verificarea pixelilor
             });
         });
         document.querySelectorAll('.overlay-menu .menu-links a').forEach(link => {
@@ -1224,13 +1287,16 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 const visibleImages = [];
                 imageColumns.forEach(column => {
-                    Array.from(column.children).forEach(img => {
-                        const rect = img.getBoundingClientRect();
-                        // Considerăm doar imaginile care sunt (parțial) vizibile în viewport
-                        if (rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth) {
-                            visibleImages.push({ element: img, rect: rect });
-                        }
-                    });
+                    // Only consider columns that are not display: none
+                    if (column.style.display !== 'none' && getComputedStyle(column).display !== 'none') {
+                        Array.from(column.children).forEach(img => {
+                            const rect = img.getBoundingClientRect();
+                            // Considerăm doar imaginile care sunt (parțial) vizibile în viewport
+                            if (rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth) {
+                                visibleImages.push({ element: img, rect: rect });
+                            }
+                        });
+                    }
                 });
                 visibleImages.forEach(({ element, rect }) => {
                     if (element.complete && element.naturalWidth > 0) {
@@ -1259,7 +1325,6 @@
                 return null;
             }
         }
-
 
         function interpolateColor(luminosity) {
             const darkThreshold = 80;
@@ -1355,26 +1420,65 @@
 
                 const scrollAmount = e.deltaY * 0.5;
 
-                const totalFilteredImages = duplicatedImages.filter(image =>
-                    currentFilterCategory === 'all' ||
-                    image.category === currentFilterCategory
-                ).length;
-                const imagesPerColumn = Math.ceil(totalFilteredImages / imageColumns.length); // Ajustat pentru numărul de coloane vizibile
-                const singleLoopHeight = imagesPerColumn * 562; // 562px este înălțimea fiecărei imagini
+                const activeColumns = getActiveColumns();
+                let singleLoopHeight = 0;
+                
+                // Calculate the actual scrollable height for one loop based on actual content
+                // This logic is duplicated from animateScroll - consider refactoring into a helper
+                const originalFilteredImages = images.filter(image =>
+                    currentFilterCategory === 'all' || image.category === currentFilterCategory
+                );
+                
+                const imagesForThisColumnIndex = index % activeColumns.length;
+                const isColumnActive = activeColumns.includes(column);
+
+                if (isColumnActive) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.style.visibility = 'hidden';
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.width = column.offsetWidth + 'px';
+                    document.body.appendChild(tempDiv);
+
+                    originalFilteredImages.forEach((image, imgIndex) => {
+                        if (imgIndex % activeColumns.length === imagesForThisColumnIndex) {
+                            const imgElement = document.createElement('img');
+                            imgElement.src = image.src;
+                            imgElement.classList.add('image-item');
+                            if (window.innerWidth <= 1024) {
+                                imgElement.style.height = 'auto';
+                                imgElement.style.maxHeight = (window.innerWidth <= 768) ? '300px' : '350px';
+                                imgElement.style.minHeight = (window.innerWidth <= 768) ? '180px' : '200px';
+                            } else {
+                                imgElement.style.height = '562px';
+                            }
+                            tempDiv.appendChild(imgElement);
+                        }
+                    });
+
+                    singleLoopHeight = tempDiv.offsetHeight;
+                    document.body.removeChild(tempDiv);
+                    if (singleLoopHeight === 0 && column.children.length > 0) {
+                        singleLoopHeight = column.scrollHeight / 5; // Fallback for loaded but measured as zero
+                    } else if (singleLoopHeight === 0) {
+                        singleLoopHeight = 1; // Avoid division by zero
+                    }
+                } else {
+                    return; // Don't allow scroll for inactive columns
+                }
 
                 // Ajustează poziția de scroll
                 scrollPositions[index] += scrollAmount;
                 // Logica de buclă infinită pentru scroll manual
                 if (animationDirections[index] === 'normal') {
-                    if (scrollPositions[index] >= singleLoopHeight) {
+                    if (scrollPositions[index] >= singleLoopHeight && singleLoopHeight > 0) {
                         scrollPositions[index] -= singleLoopHeight;
-                    } else if (scrollPositions[index] < 0) {
+                    } else if (scrollPositions[index] < 0 && singleLoopHeight > 0) {
                         scrollPositions[index] += singleLoopHeight;
                     }
                 } else { // 'reverse'
-                    if (scrollPositions[index] <= 0) {
+                    if (scrollPositions[index] <= 0 && singleLoopHeight > 0) {
                         scrollPositions[index] += singleLoopHeight;
-                    } else if (scrollPositions[index] > singleLoopHeight) {
+                    } else if (scrollPositions[index] > singleLoopHeight && singleLoopHeight > 0) {
                         scrollPositions[index] -= singleLoopHeight;
                     }
                 }
@@ -1393,17 +1497,17 @@
             initializeCanvas();
             populateColumns(currentFilterCategory); // Repopulează coloanele la resize pentru a ajusta layout-ul
             updateTextColorsBasedOnBackground();
-            // La resize, dacă suntem pe mobil, oprim animațiile de scroll
+            
+            // Adjust scroll animation based on screen width
             if (window.innerWidth <= 768) {
                 scrollAnimationActive = false;
                 stopScrollAnimations();
-                imageColumns.forEach(col => col.style.transform = `translateY(0)`); // Resetează transformarea
-            } else {
-                scrollAnimationActive = true; // Repornește animațiile pe desktop
+                imageColumns.forEach(col => col.style.transform = `translateY(0)`); // Reset transformation
+            } else if (!overlayMenu.classList.contains('active') && !overlayContact.classList.contains('active') && !imageDetailOverlay.classList.contains('active')) {
+                scrollAnimationActive = true; // Resume animations on desktop/tablet if no overlay is active
                 startScrollAnimations();
             }
         });
-
     </script>
 </body>
 </html>
