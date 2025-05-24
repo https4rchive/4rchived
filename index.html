@@ -12,7 +12,8 @@
             --color-bg: #f8f8f8;
             --color-text: #1a1a1a; /* Culoarea de bază a textului când nu este pe overlay */
             --color-light-gray: #e0e0e0;
-            --scroll-height-col1: 0px;
+            /* Aceste variabile CSS nu mai sunt strict necesare pentru animație JS, dar le putem păstra */
+            --scroll-height-col1: 0px; 
             --scroll-height-col2: 0px;
             --scroll-height-col3: 0px;
         }
@@ -180,12 +181,6 @@
             pointer-events: none !important;
         }
 
-        /* Clasele text-dark și text-light NU MAI SUNT NECESARE DACĂ FACEM INTERPOLARE DIRECTĂ */
-        /* le las momentan comentate, în cazul în care vrei să revii la ele */
-        /* .text-dark { color: black; } */
-        /* .text-light { color: white; } */
-        /* Am mutat tranziția de culoare în blocurile de mai sus */
-
         /* --- Carusel de Imagini MODIFICAT pentru 3 coloane și fără spații --- */
         .image-carousel-container {
             position: absolute;
@@ -203,27 +198,10 @@
         .image-column { 
             display: flex;
             flex-direction: column;
-            height: fit-content;
+            height: fit-content; /* Lăsăm JS să gestioneze scroll-ul */
             width: 100%;
-        }
-
-        .image-column:nth-child(1) { animation: scrollAnimationCol1 linear infinite; }
-        .image-column:nth-child(2) { animation: scrollAnimationCol2 linear infinite; }
-        .image-column:nth-child(3) { animation: scrollAnimationCol3 linear infinite; }
-
-        @keyframes scrollAnimationCol1 {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(calc(-1 * var(--scroll-height-col1))); }
-        }
-
-        @keyframes scrollAnimationCol2 {
-            0% { transform: translateY(calc(-1 * var(--scroll-height-col2))); } 
-            100% { transform: translateY(0); }
-        }
-
-        @keyframes scrollAnimationCol3 {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(calc(-1 * var(--scroll-height-col3))); }
+            transform: translateY(0); /* Inițializare, va fi gestionat de JS */
+            /* Eliminăm proprietățile animation */
         }
 
         .image-item {
@@ -256,7 +234,7 @@
         }
 
         /* --- OVERLAY STYLES --- */
-        .overlay-menu, .overlay-contact { /* Removed .overlay-more */
+        .overlay-menu, .overlay-contact { 
             position: fixed;
             top: 0;
             left: 0;
@@ -266,11 +244,11 @@
             visibility: hidden;
             pointer-events: none;
             transition: opacity 0.6s cubic-bezier(0.7, 0, 0.3, 1), 
-                        transform 0.6s cubic-bezier(0.7, 0, 0.3, 1); /* Adăugăm transform în tranziție */
+                        transform 0.6s cubic-bezier(0.7, 0, 0.3, 1); 
             opacity: 0; 
             background-color: rgba(0, 0, 0, 0.88); 
-            transform: scaleY(0); /* Inițial, scalat la 0 pe Y */
-            transform-origin: top; /* Animația pornește de sus */
+            transform: scaleY(0); 
+            transform-origin: top; 
         }
 
         .image-detail-overlay { 
@@ -290,8 +268,8 @@
         }
 
         .overlay-menu.active, 
-        .overlay-contact.active { /* Removed .overlay-more.active */
-            transform: scaleY(1); /* Devine vizibil prin scalare */
+        .overlay-contact.active { 
+            transform: scaleY(1); 
             opacity: 1;
             visibility: visible; 
             pointer-events: auto; 
@@ -305,10 +283,10 @@
 
         /* --- OVERLAY MENU (Textul trebuie să fie pe DREAPTA acum) --- */
         .overlay-menu .menu-links {
-            text-align: right; /* Changed from left to right */
+            text-align: right; 
             max-width: 1200px;
             width: 100%;
-            padding-right: 100px; /* Changed from left to right */
+            padding-right: 100px; 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -336,26 +314,24 @@
         }
 
         .overlay-menu .menu-links a:hover {
-            transform: translateX(-30px); /* Changed from translateX(30px) to -30px */
+            transform: translateX(-30px); 
             opacity: 1;
         }
 
         .overlay-menu.active .menu-links a {
-            animation: slideInFromRight 0.6s ease-out forwards; /* Changed from slideInFromLeft to slideInFromRight */
-            opacity: 0; /* Set opacity to 0 initially for the animation to take over */
+            animation: slideInFromRight 0.6s ease-out forwards; 
+            opacity: 0; 
         }
         .overlay-menu.active .menu-links a:nth-child(1) { animation-delay: 0.1s; }
         .overlay-menu.active .menu-links a:nth-child(2) { animation-delay: 0.15s; }
         .overlay-menu.active .menu-links a:nth-child(3) { animation-delay: 0.2s; }
         .overlay-menu.active .menu-links a:nth-child(4) { animation-delay: 0.25s; }
 
-        /* NEW: Keyframe for slideInFromRight */
         @keyframes slideInFromRight {
-            from { opacity: 0; transform: translateX(50px) translateY(-20px); } /* Adăugăm un mic translateY */
+            from { opacity: 0; transform: translateX(50px) translateY(-20px); } 
             to { opacity: 1; transform: translateX(0) translateY(0); }
         }
 
-        /* Original slideInFromLeft, kept for other uses if any, but menu now uses FromRight */
         @keyframes slideInFromLeft {
             from { opacity: 0; transform: translateX(-50px); }
             to { opacity: 1; transform: translateX(0); }
@@ -804,7 +780,7 @@
             <p class="contact-description">
                 TO REACH 4RCHIVED OR TO REQUEST A DETAILED
                 COLLECTION OF OUR PHOTOGRAPHY SERVICES,
-                PLEASE FEEL FREE TO FILL OUT YOUR INFORMATION AND
+                PLEASE FEEL OUT YOUR INFORMATION AND
                 WE WILL CONTACT YOU WITHIN 24 HOURS.
             </p>
 
@@ -844,7 +820,6 @@
     <script>
         const overlayMenu = document.getElementById('overlayMenu');
         const overlayContact = document.getElementById('overlayContact');
-        // Removed overlayMore as it's no longer needed
         const mainMenuToggle = document.getElementById('mainMenuToggle');
         const contactLink = document.getElementById('contactLink');
         const menuText = document.getElementById('menuText');
@@ -863,13 +838,11 @@
         const detailReadMore = document.getElementById('detailReadMore');
         const detailImage = document.getElementById('detailImage');
         
-        // Removed moreCategoriesLink
         const categoryDisplayText = document.getElementById('categoryDisplayText');
 
         let scrollAnimationActive = true; 
-        let currentFilterCategory = 'all'; // Keep track of the current filter
+        let currentFilterCategory = 'all'; 
 
-        // Elemente UI care își schimbă culoarea dinamic
         const adaptableUIElements = [mainLogo, mainMenuToggle, menuText, contactLink, categoryDisplayText];
 
         // Definire un array cu toate imaginile (sursa + categorie + detalii)
@@ -884,7 +857,7 @@
             { src: 'images/IMG_2022.jpeg', category: 'events', title: 'Eveniment Corporativ', subtitle: 'Excelență profesională.', description: 'De la conferințe la ceremonii de premiere, aceste imagini documentează profesionalismul și energia adunărilor corporative.', readMore: '#' },
             { src: 'images/IMG_2044.jpeg', category: 'black_white', title: 'Alb și Negru', subtitle: 'Frumusețea atemporală.', description: 'O colecție de fotografii în alb și negru, explorând contrastele, texturile și emoțiile, într-o manieră clasică și elegantă.', readMore: '#' },
             { src: 'images/IMG_2253.jpeg', category: 'editorial', title: 'Editorial de Modă', subtitle: 'Stil și viziune artistică.', description: 'Imagini create pentru publicații de modă, punând accent pe estetică, design și povestea din spatele fiecărei ținute.', readMore: '#' },
-            { src: 'images/IMG_2311.jpeg', category: 'bride', title: 'Eleganța Miresei', subtitle: 'Grație și frumusețe.', description: 'O colecție care celebrează eleganța atemporală a mireselor, surprinzând bucuria și grația lor în ziua cea mare.', readMore: '#' },
+            { src: 'images/IMG_2311.jpeg', category: 'bride', title: 'Eleganța Miresei', subtitle: 'Grație și frumuseță.', description: 'O colecție care celebrează eleganța atemporală a mireselor, surprinzând bucuria și grația lor în ziua cea mare.', readMore: '#' },
             { src: 'images/IMG_2319.jpeg', category: 'groom', title: 'Stilul Mirelui', subtitle: 'Rafinat și elegant.', description: 'Prezentând stilul și personalitatea unică a mirilor, concentrându-se pe pregătirile, interacțiunile și momentele lor de mândrie.', readMore: '#' },
             { src: 'images/IMG_2374.JPG', category: 'couple', title: 'Călătoria Cuplului', subtitle: 'Două inimi, un singur drum.', description: 'Fotografii intime ale cuplurilor, surprinzând legătura, chimia și momentele lor împărtășite de fericire și iubire.', readMore: '#' },
             { src: 'images/IMG_2405.JPG', category: 'party', title: 'Vibe-uri de Petrecere', subtitle: 'Sărbători pline de bucurie.', description: 'Imagini energice de la diverse petreceri și adunări, evidențiind distracția, râsetele și atmosfera vibrantă a evenimentelor sociale.', readMore: '#' },
@@ -902,7 +875,13 @@
             { src: 'images/Captură de ecran din 2025-05-23 la 15.36.51.jpg', category: 'vinyl', title: 'Spinning Records', subtitle: 'The art of sound.', description: 'Exploring the visual poetry of turntables and vinyl, focusing on the interplay of light and shadow on the grooves.', readMore: '#' } 
         ];
 
-        const duplicatedImages = [...images, ...images, ...images]; 
+        // Duplicăm imaginile de mai multe ori pentru a asigura un scroll fluid și o buclă continuă
+        const duplicatedImages = [...images, ...images, ...images, ...images, ...images]; 
+
+        let scrollPositions = [0, 0, 0]; // Pozițiile curente de scroll pentru fiecare coloană
+        let animationFrames = [null, null, null]; // Pentru a stoca ID-urile requestAnimationFrame
+        const scrollSpeed = 0.5; // Viteza de scroll în pixeli pe frame (ajustează pentru a controla viteza)
+        const animationDirections = ['normal', 'reverse', 'normal']; // Direcțiile pentru fiecare coloană
 
         function populateColumns(filterCategory = 'all') {
             imageColumns.forEach(column => column.innerHTML = ''); 
@@ -924,7 +903,6 @@
             }
             categoryDisplayText.classList.add('active'); // Show the text
 
-
             filteredImages.forEach((image, index) => {
                 const imgElement = document.createElement('img');
                 imgElement.src = image.src;
@@ -940,30 +918,60 @@
                 imageColumns[columnIndex].appendChild(imgElement);
             });
 
-            updateScrollHeights();
-            restartScrollAnimations();
-        }
-
-        function updateScrollHeights() {
+            // Resetează pozițiile de scroll la repopulare
+            scrollPositions = [0, 0, 0];
             imageColumns.forEach((column, index) => {
-                if (window.getComputedStyle(column).display === 'none' || column.offsetHeight === 0) {
-                     document.documentElement.style.setProperty(`--scroll-height-col${index + 1}`, `0px`);
-                } else {
-                    const scrollHeight = column.scrollHeight / 3; 
-                    document.documentElement.style.setProperty(`--scroll-height-col${index + 1}`, `${scrollHeight}px`);
-                }
+                column.style.transform = `translateY(0px)`;
             });
+
+            startScrollAnimations(); // Repornește animațiile după populare
         }
 
-        function restartScrollAnimations() {
-            imageColumns.forEach((column, index) => {
-                column.style.animation = 'none';
-                void column.offsetWidth; 
+        // Functia principală de animație pentru o coloană
+        function animateScroll(columnIndex) {
+            const column = imageColumns[columnIndex];
+            const singleLoopHeight = column.scrollHeight / (duplicatedImages.length / images.length);
+            const currentSpeed = (animationDirections[columnIndex] === 'normal') ? scrollSpeed : -scrollSpeed;
 
-                if (scrollAnimationActive) {
-                    const animationDirection = (index === 1) ? 'reverse' : 'normal';
-                    column.style.animation = `scrollAnimationCol${index + 1} linear infinite ${animationDirection}`;
-                    column.style.animationDuration = '40s'; 
+            scrollPositions[columnIndex] += currentSpeed;
+
+            // Logica de buclă infinită
+            if (animationDirections[columnIndex] === 'normal') {
+                if (scrollPositions[columnIndex] >= singleLoopHeight) {
+                    scrollPositions[columnIndex] -= singleLoopHeight;
+                }
+            } else { // 'reverse'
+                if (scrollPositions[columnIndex] <= 0) {
+                    scrollPositions[columnIndex] += singleLoopHeight;
+                }
+            }
+
+            column.style.transform = `translateY(${-scrollPositions[columnIndex]}px)`;
+
+            if (scrollAnimationActive) { // Continuă animația doar dacă este activă
+                animationFrames[columnIndex] = requestAnimationFrame(() => animateScroll(columnIndex));
+            }
+        }
+
+        // Porneste toate animatiile
+        function startScrollAnimations() {
+            if (scrollAnimationActive) {
+                imageColumns.forEach((column, index) => {
+                    if (animationFrames[index]) {
+                        cancelAnimationFrame(animationFrames[index]);
+                    }
+                    // Asigură că animația începe de la poziția curentă
+                    animationFrames[index] = requestAnimationFrame(() => animateScroll(index));
+                });
+            }
+        }
+
+        // Oprește toate animatiile
+        function stopScrollAnimations() {
+            imageColumns.forEach((column, index) => {
+                if (animationFrames[index]) {
+                    cancelAnimationFrame(animationFrames[index]);
+                    animationFrames[index] = null;
                 }
             });
         }
@@ -975,6 +983,19 @@
             }
 
             if (overlayElement === imageDetailOverlay) {
+                // Asigură că elementele sunt vizibile înainte de a le anima pentru ieșire
+                detailImage.style.transform = 'translateX(0)'; 
+                detailImage.style.opacity = '1';
+                detailTitle.style.transform = 'translateX(0)';
+                detailTitle.style.opacity = '1';
+                detailSubtitle.style.transform = 'translateX(0)';
+                detailSubtitle.style.opacity = '1';
+                detailDescription.style.transform = 'translateX(0)';
+                detailDescription.style.opacity = '1';
+                detailReadMore.style.transform = 'translateX(0)';
+                detailReadMore.style.opacity = '1';
+
+                // Aplici transformarea și opacitatea pentru ieșire
                 detailImage.style.transform = 'translateX(50px)';
                 detailImage.style.opacity = '0';
                 detailTitle.style.transform = 'translateX(-50px)';
@@ -988,7 +1009,6 @@
                 
                 overlayElement.style.opacity = '0'; 
             } else if (overlayElement === overlayMenu) {
-                // Pentru overlayMenu, vrem doar fade-out și scaleY invers
                 overlayElement.style.opacity = '0';
                 overlayElement.style.transform = 'scaleY(0)';
             } else {
@@ -1002,12 +1022,22 @@
                 overlayElement.style.visibility = 'hidden';
                 overlayElement.style.pointerEvents = 'none';
                 
-                if (overlayElement === imageDetailOverlay || overlayElement === overlayMenu) {
-                     overlayElement.style.opacity = ''; 
-                     overlayElement.style.transform = ''; // Reset transform for next activation
-                } else {
-                     overlayElement.style.transform = ''; 
+                // Resetează stilurile de transform și opacitate după animație
+                if (overlayElement === imageDetailOverlay) {
+                    detailImage.style.transform = '';
+                    detailImage.style.opacity = '';
+                    detailTitle.style.transform = '';
+                    detailTitle.style.opacity = '';
+                    detailSubtitle.style.transform = '';
+                    detailSubtitle.style.opacity = '';
+                    detailDescription.style.transform = '';
+                    detailDescription.style.opacity = '';
+                    detailReadMore.style.transform = '';
+                    detailReadMore.style.opacity = '';
                 }
+                overlayElement.style.opacity = ''; 
+                overlayElement.style.transform = ''; 
+                
 
                 if (callback) callback();
             };
@@ -1022,8 +1052,8 @@
                 hideOverlaySmoothly(overlayElement, () => {
                     showMainUIElements();
                     scrollAnimationActive = true;
-                    restartScrollAnimations();
-                    startPixelCheckInterval(); // Repornim verificarea culorii
+                    startScrollAnimations(); // Repornim animația de scroll
+                    startPixelCheckInterval(); 
                 });
                 return;
             }
@@ -1037,12 +1067,12 @@
             overlayElement.classList.add('active'); 
 
             hideMainUIElements();
-            stopPixelCheckInterval(); // Oprim verificarea culorii
+            stopPixelCheckInterval(); 
             mainMenuToggle.classList.add('active'); 
             mainMenuToggle.style.color = 'white'; 
 
             scrollAnimationActive = false; 
-            restartScrollAnimations();
+            stopScrollAnimations(); // Oprim animația de scroll
             document.body.style.overflow = 'hidden'; 
         }
 
@@ -1051,7 +1081,7 @@
             contactLink.classList.add('hide-ui');
             mainLogo.classList.add('hide-ui');
             backButton.classList.add('hide-ui'); 
-            categoryDisplayText.classList.remove('active'); // Hide category text when other UI elements are hidden
+            categoryDisplayText.classList.remove('active'); 
         }
 
         function showMainUIElements() {
@@ -1061,11 +1091,10 @@
             
             mainMenuToggle.classList.remove('active'); 
             backButton.classList.add('hide-ui'); 
-            categoryDisplayText.classList.add('active'); // Show category text when main UI is shown
+            categoryDisplayText.classList.add('active'); 
         }
 
         mainMenuToggle.addEventListener('click', () => {
-            // If any overlay is active, clicking '+' (which becomes 'X') should go to homepage
             if (overlayMenu.classList.contains('active') || 
                 overlayContact.classList.contains('active') || 
                 imageDetailOverlay.classList.contains('active')) {
@@ -1075,9 +1104,9 @@
                 hideOverlaySmoothly(imageDetailOverlay, () => {
                     showMainUIElements();
                     scrollAnimationActive = true;
-                    populateColumns('all'); // Reset to 'ALL' filter
-                    restartScrollAnimations();
-                    startPixelCheckInterval(); // Repornim verificarea culorii
+                    populateColumns(currentFilterCategory); // Repopulează cu categoria curentă
+                    // `populateColumns` va apela `startScrollAnimations`
+                    startPixelCheckInterval(); 
                 });
 
             } else {
@@ -1092,8 +1121,6 @@
         contactLink.addEventListener('click', () => {
             toggleOverlay(overlayContact);
         });
-
-        // Removed the moreCategoriesLink event listener as the link is removed
 
         function showImageDetail(image) {
             if (overlayMenu.classList.contains('active')) hideOverlaySmoothly(overlayMenu);
@@ -1122,7 +1149,7 @@
             detailReadMore.style.opacity = '1';
 
             hideMainUIElements(); 
-            stopPixelCheckInterval(); // Oprim verificarea culorii
+            stopPixelCheckInterval(); 
 
             backButton.classList.remove('hide-ui'); 
             
@@ -1130,16 +1157,16 @@
             mainMenuToggle.style.color = 'white'; 
 
             scrollAnimationActive = false;
-            restartScrollAnimations();
+            stopScrollAnimations(); // Oprim animația de scroll
         }
 
         backButton.addEventListener('click', () => {
             hideOverlaySmoothly(imageDetailOverlay, () => {
                 showMainUIElements(); 
                 scrollAnimationActive = true;
-                populateColumns(currentFilterCategory); // Return to previously filtered category
-                restartScrollAnimations();
-                startPixelCheckInterval(); // Repornim verificarea culorii
+                populateColumns(currentFilterCategory); // Repopulează cu categoria curentă
+                // `populateColumns` va apela `startScrollAnimations`
+                startPixelCheckInterval(); 
             });
         });
 
@@ -1151,8 +1178,6 @@
                 toggleOverlay(overlayMenu); 
             });
         });
-
-        // Removed the event listener for .overlay-more links as the overlay itself is removed
 
         imageCarouselContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('image-item')) {
@@ -1180,15 +1205,12 @@
 
         function getAverageLuminosity(x, y, width, height) {
             try {
-                // Curățăm canvas-ul
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Desenăm imaginile vizibile din carusel în canvas
                 const visibleImages = [];
                 imageColumns.forEach(column => {
                     Array.from(column.children).forEach(img => {
                         const rect = img.getBoundingClientRect();
-                        // Verificăm dacă imaginea este vizibilă pe ecran
                         if (rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth) {
                             visibleImages.push({ element: img, rect: rect });
                         }
@@ -1196,7 +1218,6 @@
                 });
 
                 visibleImages.forEach(({ element, rect }) => {
-                    // Verificăm dacă imaginea este complet încărcată pentru a evita erori
                     if (element.complete && element.naturalWidth > 0) {
                         ctx.drawImage(element, rect.left, rect.top, rect.width, rect.height);
                     }
@@ -1217,7 +1238,7 @@
                 const avgG = g / pixelCount;
                 const avgB = b / pixelCount;
 
-                const luminosity = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB); // valoare de la 0 la 255
+                const luminosity = (0.299 * avgR + 0.587 * avgG + 0.114 * avgB);
                 return luminosity;
 
             } catch (e) {
@@ -1226,47 +1247,36 @@
             }
         }
 
-        // Funcție pentru a interpola o culoare pe baza luminozității
         function interpolateColor(luminosity) {
-            // Luminozitatea este între 0 (întunecat) și 255 (deschis)
-            // Vrem ca textul să fie alb când luminozitatea e mică și negru când e mare.
-
-            // Definirea a două praguri pentru tranziție
-            const darkThreshold = 80;  // Sub acest prag, textul e alb
-            const lightThreshold = 180; // Peste acest prag, textul e negru
+            const darkThreshold = 80;  
+            const lightThreshold = 180; 
 
             let factor;
             if (luminosity <= darkThreshold) {
-                factor = 1; // 100% alb
+                factor = 1; 
             } else if (luminosity >= lightThreshold) {
-                factor = 0; // 100% negru
+                factor = 0; 
             } else {
-                // Interpolează între 1 (alb) și 0 (negru)
-                // Când luminozitatea crește de la darkThreshold la lightThreshold
                 factor = 1 - ((luminosity - darkThreshold) / (lightThreshold - darkThreshold));
             }
 
-            // Calculăm componentele RGB
-            const r = Math.round(255 * factor); // Când factor e 1, e 255 (alb). Când factor e 0, e 0 (negru)
+            const r = Math.round(255 * factor); 
             const g = Math.round(255 * factor);
             const b = Math.round(255 * factor);
 
             return `rgb(${r}, ${g}, ${b})`;
         }
 
-
-        // Funcție care verifică luminozitatea și schimbă culoarea textului
         function updateTextColorsBasedOnBackground() {
             if (!ctx) return; 
 
             adaptableUIElements.forEach(element => {
                 if (element.classList.contains('hide-ui') || element.classList.contains('active')) {
-                    // Don't change color if hidden or if it's the '+' when active (it's hardcoded white)
                     if (element.id === 'mainMenuToggle' && element.classList.contains('active')) {
                          return;
                     }
                     if (element.id === 'categoryDisplayText' && !element.classList.contains('active')) {
-                        return; // Only update if actively visible
+                        return; 
                     }
                 }
 
@@ -1287,7 +1297,6 @@
             if (pixelCheckInterval) {
                 clearInterval(pixelCheckInterval);
             }
-            // Am mărit intervalul la 150ms pentru a da mai mult timp tranziției
             pixelCheckInterval = setInterval(updateTextColorsBasedOnBackground, 150); 
         }
         
@@ -1296,16 +1305,70 @@
             pixelCheckInterval = null;
         }
 
+        // --- INTERACȚIUNE CARUSEL LA HOVER ȘI SCROLL MANUAL ---
+
+        imageColumns.forEach((column, index) => {
+            // Oprirea animației la mouseenter
+            column.addEventListener('mouseenter', () => {
+                if (scrollAnimationActive) { // Doar dacă animația e activă
+                    scrollAnimationActive = false; 
+                    stopScrollAnimations(); // Oprim requestAnimationFrame-urile
+                }
+            });
+
+            // Repornirea animației la mouseleave
+            column.addEventListener('mouseleave', () => {
+                if (!overlayMenu.classList.contains('active') && 
+                    !overlayContact.classList.contains('active') && 
+                    !imageDetailOverlay.classList.contains('active')) {
+                    
+                    scrollAnimationActive = true; 
+                    startScrollAnimations(); // Repornim requestAnimationFrame-urile
+                }
+            });
+
+            // Gestionarea scroll-ului manual cu rotița
+            column.addEventListener('wheel', (e) => {
+                if (scrollAnimationActive) return; // Permite scroll manual doar dacă animația e oprită
+
+                e.preventDefault(); 
+
+                const scrollAmount = e.deltaY * 0.5; 
+
+                const singleLoopHeight = column.scrollHeight / (duplicatedImages.length / images.length);
+
+                // Ajustează poziția de scroll
+                scrollPositions[index] += scrollAmount;
+
+                // Logica de buclă infinită pentru scroll manual
+                if (animationDirections[index] === 'normal') {
+                    if (scrollPositions[index] >= singleLoopHeight) {
+                        scrollPositions[index] -= singleLoopHeight;
+                    } else if (scrollPositions[index] < 0) {
+                        scrollPositions[index] += singleLoopHeight;
+                    }
+                } else { // 'reverse'
+                    if (scrollPositions[index] <= 0) {
+                        scrollPositions[index] += singleLoopHeight;
+                    } else if (scrollPositions[index] > singleLoopHeight) {
+                        scrollPositions[index] -= singleLoopHeight;
+                    }
+                }
+                
+                column.style.transform = `translateY(${-scrollPositions[index]}px)`;
+            });
+        });
+
         window.addEventListener('load', () => {
             document.body.style.overflow = 'hidden'; 
             initializeCanvas(); 
-            populateColumns(); // Initial populate with 'all'
+            populateColumns(); 
             startPixelCheckInterval(); 
         });
 
         window.addEventListener('resize', () => {
             initializeCanvas(); 
-            populateColumns(currentFilterCategory); // Repopulate with current filter on resize
+            populateColumns(currentFilterCategory); 
             updateTextColorsBasedOnBackground(); 
         });
 
